@@ -106,11 +106,12 @@ for guest_idx in range(NUM_GUESTS):
 
         num_rooms = random.randint(1,3)
         rand_hotel = random.choice(list(hotel["hotel_id"]))
-        rooms = random.choices(list(room.loc[room.hotel_id==rand_hotel]["room_id"]),k=num_rooms)
+        rooms = random.sample(list(room.loc[room.hotel_id==rand_hotel]["room_id"]),k=num_rooms)
         for room_id in rooms:
             # TODO: Figure out if room_id is currently reserved during the span
             if check_out_date >= TODAYS_DATE:
-                room.loc[room_id, "available"] = 0
+                print(f"{check_out_date} is later than {TODAYS_DATE}. Reservation {reservation_id+1}, room {room_id}")
+                room.loc[room["room_id"]==room_id, "available"] = 0
 
             reservation_room_rel_id = len(reservation_room_rel.index)
             reservation_room_rel.loc[reservation_room_rel_id]=[reservation_id+1, room_id]
