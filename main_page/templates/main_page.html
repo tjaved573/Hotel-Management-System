@@ -4,12 +4,40 @@
 <br />
 
 <h2> Click below to list all hotels </h2>
-<form method="POST">
+<form method="GET">
     {% csrf_token %}
     <input type="submit" name="list_hotels" value="list the hotels"/>
 </form>
 {% for hotel in hotels %}
-<p>{{ hotel.location }}</p>
+<p>{{ hotel }}</p>
 {% endfor %}
+<h2> Click below to list all hotels </h2>
+<form method="GET">
+    {% csrf_token %}
+    <input type="submit" name="list_reservations" value="list the reservations"/>
+</form>
+{% for reservation in reservations %}
+<p>{{ reservation }}</p>
+{% endfor %}
+<h2> Edit the form to make a reservation </h2>
+<form method="POST">
+    {% csrf_token %}
+    <label for="check_in_date">Check in date:</label><br>
+    <input type="text" name="check_in_date"/><br>
+
+    <label for="check_out_date">Check out date:</label><br>
+    <input type="text" name="check_out_date"/><br>
+
+    <label for="guest_id">Guest id:</label><br>
+    <input type="text" name="guest_id"/><br>
+
+    <label for="payment_type">Payment type:</label><br>
+    <input type="text" name="payment_type"/><br>
+
+    <label for="credit_card_number">CCN:</label><br>
+    <input type="text" name="credit_card_number"/><br>
+
+    <input type="submit" value="Submit"/><br>
+</form>
 
 
