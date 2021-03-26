@@ -1,3 +1,7 @@
 from django.db import models
 
-# Create your models here.
+
+#class Hotel(models.Model):
+#	# hotel_id = models.
+
+
