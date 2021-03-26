@@ -3,9 +3,13 @@
 <br />
 <br />
 
-<h2> Click below to sign in as </h2>
-<button> Guest </button>
-<button> Existing Employee </button>
-
+<h2> Click below to list all hotels </h2>
+<form method="POST">
+    {% csrf_token %}
+    <input type="submit" name="list_hotels" value="list the hotels"/>
+</form>
+{% for hotel in hotels %}
+<p>{{ hotel.location }}</p>
+{% endfor %}
 
 
