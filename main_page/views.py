@@ -16,7 +16,7 @@ def main_page(request):
         for r in Reservation.objects.all():
             reservations.append(r)
     if "list_features" in request.GET:
-        for r in Feature.objects.raw("SELECT * FROM features"):
+        for r in Feature.objects.all():
             features.append(r)
     if request.method == "POST":
         form = FeatureForm(request.POST)
