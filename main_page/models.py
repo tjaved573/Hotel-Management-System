@@ -2,6 +2,9 @@ from django.db import models
 
 # Create your models here.
 class Hotel(models.Model):
+    class Meta:
+        db_table = 'hotel'
+
     hotel_id    = models.IntegerField(primary_key=True)
     location    = models.CharField(max_length=100)
     num_rooms   = models.IntegerField()
@@ -13,6 +16,9 @@ class Hotel(models.Model):
 
 
 class Reservation(models.Model):
+    class Meta:
+        db_table = 'reservation'
+
     reservation_id      = models.IntegerField(primary_key=True)
     check_in_date       = models.DateField()
     check_out_date      = models.DateField()
@@ -26,6 +32,9 @@ class Reservation(models.Model):
 
 
 class Feature(models.Model):
+    class Meta:
+        db_table = 'features'
+    
     feature_id      = models.IntegerField(primary_key=True)
     feature         = models.CharField(max_length=20)
     price           = models.DecimalField(max_digits=9, decimal_places=2)
@@ -33,3 +42,23 @@ class Feature(models.Model):
 
     def __str__(self):
         return f"{{feature_id: {self.feature_id}, feature: {self.feature}, price: {self.price}, description: {self.description}}}"
+
+# class Guest(models.Model):
+#     guest_id = models.IntegerField(primary_key=True)
+#     first = models.CharField(max_length=20)
+#     last = models.CharField(max_length=20)
+
+
+
+# class Room(models.Model):
+#     room_id = models.IntegerField(primary_key=True)
+#     hotel_id = models.IntegerField()
+#     room_type = models.CharField(max_length=20)
+#     price_per_night = models.DecimalField(max_digits=5, decimal_places=2)
+#     available = models.IntegerField()
+#     check_in_time = models.TimeField()
+#     check_out_time = models.TimeField()
+
+
+
+

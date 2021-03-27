@@ -10,10 +10,10 @@ def main_page(request):
     reservations = []
     features = []
     if "list_hotels" in request.GET:
-        for h in Hotel.objects.raw("SELECT * FROM hotel"):
+        for h in Hotel.objects.all():
             hotels.append(h)
     if "list_reservations" in request.GET:
-        for r in Reservation.objects.raw("SELECT * FROM reservation"):
+        for r in Reservation.objects.all():
             reservations.append(r)
     if "list_features" in request.GET:
         for r in Feature.objects.raw("SELECT * FROM features"):
@@ -23,6 +23,7 @@ def main_page(request):
         if form.is_valid():
             cd = form.cleaned_data
             new_feature = Feature(feature_id=cd['feature_id'], feature=cd['feature'], price=cd['price'], description=cd['description'])
+            new_feature.save()
             print(f"new featuer: {new_feature}")
         else:
             print("invalid form.")
