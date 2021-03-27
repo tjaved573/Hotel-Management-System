@@ -12,7 +12,7 @@
 <p>{{ hotel }}</p>
 {% endfor %}
 
-<h2> Click below to list all hotels </h2>
+<h2> Click below to list all reservations </h2>
 <form method="GET">
     {% csrf_token %}
     <input type="submit" name="list_reservations" value="list the reservations"/>
