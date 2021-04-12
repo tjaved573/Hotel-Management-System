@@ -74,15 +74,15 @@ WSGI_APPLICATION = 'hotel_management.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'HOST': '34.69.8.181',
-        'USER': 'root',
-        'PASSWORD': '12345',
-        'NAME': 'cs348Project',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'HOST': '34.69.8.181',
+#         'USER': 'root',
+#         'PASSWORD': '12345',
+#         'NAME': 'cs348Project',
+#     }
+# }
 
 
 # Password validation

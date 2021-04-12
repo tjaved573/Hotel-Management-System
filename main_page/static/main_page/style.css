@@ -1,0 +1,66 @@
+input {
+    padding: 12px 20px;
+    margin: 8px 0px;
+    width: 50%;
+}
+
+h1 {
+    padding-bottom: 30px;
+}
+
+.center {
+    margin: auto;
+}
+
+.button {
+    padding: 15px;
+    margin-top: 20px;
+    color: azure;
+    border-color: black;
+    font-size: 16px;
+}
+
+.glyphicon {
+    font-size: 20px;
+}
+
+.guest {
+    color: rgb(119, 214, 151);
+}
+
+.employee {
+    color: rgb(108, 211, 245);
+}
+
+.admin {
+    color: rgb(255, 149, 149);
+}
+
+.guest-button {
+    background-color: rgb(119, 214, 151);
+}
+
+.employee-button {
+    background-color: rgb(108, 211, 245);
+}
+
+.admin-button {
+    background-color: rgb(255, 149, 149);
+}
+
+.login-card {
+    font-size: 16px;
+    background-color: rgb(238,238,238);
+    padding: 25px;
+    margin-top: 30px;
+    border-radius: 5px;
+    text-align: center;
+    width: 600px;
+    height: 500px;
+}
+
+.entity-button {
+    padding: 70px 50px;
+    font-size: 25px;
+}
+
