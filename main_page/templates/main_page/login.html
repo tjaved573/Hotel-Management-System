@@ -19,9 +19,12 @@
           <a class="btn btn-primary button" href="{% url 'main_page_home' %}" role="button">Back to home</a>
         </div>
         <div class="row">
-          <a class="btn button {{ entity }}-button" role="button" type="submit">Submit</a>
+          <input type="submit" value="Continue" class="btn button {{ entity }}-button"/>
         </div>
       </div>
+      {% if form.errors %}
+        <p class="error">Missing or incorrect fields.</p>
+      {% endif %}
     </form>
   </div>
   
