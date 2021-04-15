@@ -9,15 +9,15 @@
     <div class="row">
 
       <div class="col-sm-4 text-center">
-        <a class="btn btn-primary entity-button" name="guest_login" style="background-color: rgb(119, 214, 151);" href="{% url 'login' 'guest' %}">Guest Login</a>
+        <a class="btn btn-primary entity-button" name="guest_login" style="background-color: rgb(119, 214, 151);" href="{% url 'guest_home' '1' %}">Guest Login</a>
       </div>
 
       <div class="col-sm-4 text-center">
-        <a class="btn btn-primary entity-button" name="employee_login" style="background-color: rgb(108, 211, 245);" href="{% url 'login' 'employee' %}">Employee Login</a>
+        <a class="btn btn-primary entity-button" name="employee_login" style="background-color: rgb(108, 211, 245);" href="{% url 'guest_home' '1' %}">Employee Login</a>
       </div>
 
       <div class="col-sm-4 text-center">
-        <a class="btn btn-primary entity-button" name="admin_login" style="background-color: rgb(255, 149, 149);" href="{% url 'login' 'admin' %}">Admin Login</a>
+        <a class="btn btn-primary entity-button" name="admin_login" style="background-color: rgb(255, 149, 149);" href="{% url 'guest_home' '1' %}">Admin Login</a>
       </div>
 
     </div>

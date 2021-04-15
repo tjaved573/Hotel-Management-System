@@ -1,10 +1,8 @@
-from django.urls import path
+from django.urls import path, include
 from main_page import views
+from guest import views as guest_views
 
 urlpatterns = [
     path('', views.home, name='main_page_home'),
-    path('login/<entity>/', views.login, name='login'),
-    # path('guest', views.guest, name='main_page_guest'),
-    # path('employee', views.employee, name='main_page_employee'),
-    # path('admin', views.admin, name='main_page_admin'),
+    path('guest/', guest_views.home, name='guest_home')
 ]
