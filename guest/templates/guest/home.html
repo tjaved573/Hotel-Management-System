@@ -1,1 +1,18 @@
-<h1>homepage for guest {{ guest_id }}</h1>
+{% extends "main_page/base.html" %}
+{% block content %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'guest/style.css' %}?{% now 'U' %}">
+    <h1>Welcome {{ guest_name }}!</h1>
+
+    <input type="submit" value="Log out" class="btn btn-primary logout-button"/>
+
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#">My reservations</a></li>
+        <li><a href="#">Make a reservation</a></li>
+    </ul>
+    <div class="reservation">
+        {% for hotel, reservation in paired_hotels_and_reservations %}
+        <p class="reservation-text">{{ hotel.location }} {{ reservation.check_in_date }} Reservation</p>
+        {% endfor %}
+    </div>
+{% endblock content %}

@@ -32,6 +32,7 @@ CREATE TABLE room (
 
 CREATE TABLE guest (
     guest_id integer NOT NULL,
+    username varchar(50),
     first varchar(20),
     last varchar(20),
     PRIMARY KEY (guest_id)
@@ -39,6 +40,7 @@ CREATE TABLE guest (
 
 CREATE TABLE employee (
     employee_id integer NOT NULL,
+    username varchar(50),
     hotel_id integer,
     first varchar(20),
     last varchar(20),

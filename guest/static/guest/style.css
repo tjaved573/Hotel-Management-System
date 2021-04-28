@@ -1,0 +1,25 @@
+h1 {
+    color: rgb(119, 214, 151);
+}
+
+ul {
+    padding: 20px;
+    font-size: 15px;
+}
+
+.reservation {
+    background-color: rgb(206, 206, 206);
+    padding: 20px;
+    margin: 20px;
+    border-radius: 5px;
+}
+
+.reservation-text {
+    font-size:  18px;
+    font-weight: bold;
+}
+
+.logout-button {
+    position: absolute;
+    right: 10em;
+}
