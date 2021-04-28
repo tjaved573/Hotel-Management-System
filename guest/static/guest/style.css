@@ -8,15 +8,24 @@ ul {
 }
 
 .reservation {
+    text-align: left;
+    width: 90%;
     background-color: rgb(206, 206, 206);
     padding: 20px;
     margin: 20px;
     border-radius: 5px;
+    font-size:  18px;
+}
+
+.reservation-button {
+    background-color: rgb(206, 206, 206);
+    font-weight: bold;
+    border: none;
 }
 
 .reservation-text {
-    font-size:  18px;
-    font-weight: bold;
+    background-color: rgb(206, 206, 206);
+    margin: 10px;
 }
 
 .logout-button {

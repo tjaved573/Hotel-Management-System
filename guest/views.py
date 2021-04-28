@@ -7,6 +7,13 @@ def home(request, guest_id):
     guest_reservations = Reservation.objects.all().filter(guest_id=guest_id)
     print(guest_reservations)
 
+    selected_reservation_id = None
+    # if request.GET:
+    #     print(f"request name: {request.GET.get('get_reservation')}")
+    if "get_reservation" in request.GET:
+        selected_reservation_id = int(request.GET.get('get_reservation'))
+        print(f"\nTrying to get info for reservation {selected_reservation_id}\n")
+
     # Getting hotels associated with each reservation
     hotels = []
     for reservation in guest_reservations:
@@ -22,6 +29,7 @@ def home(request, guest_id):
         'guest_id': guest_id,
         'guest_name': f"{guest.first} {guest.last}",
         'paired_hotels_and_reservations': paired_hotels_and_reservations,
+        'selected_reservation_id': selected_reservation_id,
         # The following two lines aren't used right now since we have the zipped list, but sending anyway
         'reservations': guest_reservations,
         'hotels': hotels
