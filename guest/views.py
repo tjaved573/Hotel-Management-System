@@ -20,7 +20,7 @@ def home(request, guest_id):
         room_feature_set = []
         for room in selected_rooms:
             room_feature_rel = FeatureRoomRel.objects.all().filter(room_id=room.room_id)
-            features = [rel.feature_id for rel in room_feature_rel]
+            features = [rel.feature for rel in room_feature_rel]
             room_feature_set.append(features)
         
         selected_res_info = zip(selected_rooms, room_feature_set)

@@ -70,11 +70,11 @@ class Feature(models.Model):
 class ReservationRoomRel(models.Model):
     # We need this model in guest to (at least) access the hotel name through reservation->room->hotel.location
     class Meta:
-        db_table = 'guest_reservationroomrel'
+        db_table = 'reservation_room_rel'
         unique_together = [['reservation_id', 'room_id']]
     
-    reservation  = models.ForeignKey('Reservation', on_delete=models.CASCADE)
-    room         = models.ForeignKey('Room', on_delete=models.CASCADE)
+    reservation  = models.ForeignKey('Reservation', related_name='reservations', on_delete=models.CASCADE)
+    room         = models.ForeignKey('Room', related_name='reservation_rooms', on_delete=models.CASCADE)
 
 
 class FeatureRoomRel(models.Model):
@@ -82,6 +82,6 @@ class FeatureRoomRel(models.Model):
         db_table = 'feature_room_rel'
         unique_together = [['feature_id', 'room_id']]
     
-    feature_id  = models.ForeignKey('Feature', db_column='feature_id', on_delete=models.CASCADE)
-    room_id     = models.ForeignKey('Room', db_column='room_id', on_delete=models.CASCADE)
+    feature = models.ForeignKey('Feature', related_name='features', on_delete=models.CASCADE)
+    room    = models.ForeignKey('Room', related_name='feature_rooms', on_delete=models.CASCADE)
 
