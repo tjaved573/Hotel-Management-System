@@ -28,6 +28,18 @@ ul {
     margin: 10px;
 }
 
+.room-desc {
+    background-color: rgb(167, 167, 167);
+    padding-left: 30px;
+    padding-bottom: 10px;
+    padding-top: 5px;
+    margin: 10px;
+}
+
+.room-desc-text {
+    padding-top: 10px;
+}
+
 .logout-button {
     position: absolute;
     right: 10em;

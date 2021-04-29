@@ -28,16 +28,6 @@ class Reservation(models.Model):
 
     def __str__(self):
         return f"{{reservation_id: {self.reservation_id}, check_in_date: {self.check_in_date}, check_out_date: {self.check_out_date}, guest_id: {self.guest_id}, payment_type: {self.payment_type}, credit_card_number: {self.credit_card_number}, total: {self.total}}}"
-    
-
-class ReservationRoomRel(models.Model):
-    # We need this model in guest to (at least) access the hotel name through reservation->room->hotel.location
-    class Meta:
-        unique_together = [['reservation_id', 'room_id']]
-    
-    reservation  = models.ForeignKey('Reservation', on_delete=models.CASCADE)
-    room         = models.ForeignKey('Room', on_delete=models.CASCADE)
-
 
 
 class Room(models.Model):
@@ -62,5 +52,36 @@ class Hotel(models.Model):
     num_rooms   = models.IntegerField()
     occupancy   = models.IntegerField()
     rating      = models.DecimalField(max_digits=4, decimal_places=3)
+
+
+class Feature(models.Model):
+    class Meta:
+        db_table = 'features'
     
+    feature_id      = models.IntegerField(primary_key=True)
+    feature         = models.CharField(max_length=20)
+    price           = models.DecimalField(max_digits=9, decimal_places=2)
+    description     = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f"{{feature_id: {self.feature_id}, feature: {self.feature}, price: {self.price}, description: {self.description}}}"
+
+
+class ReservationRoomRel(models.Model):
+    # We need this model in guest to (at least) access the hotel name through reservation->room->hotel.location
+    class Meta:
+        db_table = 'guest_reservationroomrel'
+        unique_together = [['reservation_id', 'room_id']]
+    
+    reservation  = models.ForeignKey('Reservation', on_delete=models.CASCADE)
+    room         = models.ForeignKey('Room', on_delete=models.CASCADE)
+
+
+class FeatureRoomRel(models.Model):
+    class Meta:
+        db_table = 'feature_room_rel'
+        unique_together = [['feature_id', 'room_id']]
+    
+    feature_id  = models.ForeignKey('Feature', db_column='feature_id', on_delete=models.CASCADE)
+    room_id     = models.ForeignKey('Room', db_column='room_id', on_delete=models.CASCADE)
 

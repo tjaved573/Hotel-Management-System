@@ -1,37 +1,51 @@
 from django.shortcuts import render
-from guest.models import Guest, Reservation, ReservationRoomRel, Room, Hotel
+from guest.models import Guest, Reservation, ReservationRoomRel, Room, Hotel, Feature, FeatureRoomRel
 
 
 def home(request, guest_id):
     guest = Guest.objects.get(guest_id=guest_id)
-    guest_reservations = Reservation.objects.all().filter(guest_id=guest_id)
-    print(guest_reservations)
+    reservations = Reservation.objects.all().filter(guest_id=guest_id)
 
     selected_reservation_id = None
-    # if request.GET:
-    #     print(f"request name: {request.GET.get('get_reservation')}")
+    selected_res_info = None
+    num_selected_rooms = None
     if "get_reservation" in request.GET:
         selected_reservation_id = int(request.GET.get('get_reservation'))
         print(f"\nTrying to get info for reservation {selected_reservation_id}\n")
 
-    # Getting hotels associated with each reservation
+        selected_res_room_rel = ReservationRoomRel.objects.all().filter(reservation_id=selected_reservation_id)
+        selected_rooms = [rel.room for rel in selected_res_room_rel]
+        num_selected_rooms = len(selected_rooms)
+
+        room_feature_set = []
+        for room in selected_rooms:
+            room_feature_rel = FeatureRoomRel.objects.all().filter(room_id=room.room_id)
+            features = [rel.feature_id for rel in room_feature_rel]
+            room_feature_set.append(features)
+        
+        selected_res_info = zip(selected_rooms, room_feature_set)
+
+    
     hotels = []
-    for reservation in guest_reservations:
-        res_room_rel = ReservationRoomRel.objects.get(reservation_id=reservation.reservation_id)
-        room = res_room_rel.room
-        hotel = Hotel.objects.get(hotel_id=room.hotel_id)
+    for reservation in reservations:
+        res_room_rel = ReservationRoomRel.objects.all().filter(reservation_id=reservation.reservation_id)
+        sample_room = res_room_rel[0].room
+
+        hotel = Hotel.objects.get(hotel_id=sample_room.hotel_id)
         hotels.append(hotel)
     
-    # Zipping hotel and reservation lists so that we can loop through the pairs in home.html, no other way to do this
-    paired_hotels_and_reservations = zip(hotels, guest_reservations)
+    # Zipping hotel and reservation lists so that we can loop through the pairs in home.html
+    reservations_and_hotels = zip(reservations, hotels)
 
     context = {
         'guest_id': guest_id,
         'guest_name': f"{guest.first} {guest.last}",
-        'paired_hotels_and_reservations': paired_hotels_and_reservations,
+        'reservations_and_hotels': reservations_and_hotels,
         'selected_reservation_id': selected_reservation_id,
+        'selected_res_info': selected_res_info,
+        'num_selected_rooms': num_selected_rooms,
         # The following two lines aren't used right now since we have the zipped list, but sending anyway
-        'reservations': guest_reservations,
+        'reservations': reservations,
         'hotels': hotels
     }
 

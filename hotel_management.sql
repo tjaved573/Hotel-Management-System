@@ -69,15 +69,17 @@ CREATE TABLE features (
 
 -- Data should be present here on start up
 CREATE TABLE feature_room_rel (
+    id bigint NOT NULL AUTO_INCREMENT,
     feature_id integer NOT NULL,
     room_id integer NOT NULL,
-    PRIMARY KEY (feature_id, room_id)
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE reservation_room_rel (
+    id bigint NOT NULL AUTO_INCREMENT,
     reservation_id integer NOT NULL,
     room_id integer NOT NULL,
-    PRIMARY KEY (reservation_id, room_id)
+    PRIMARY KEY (id)
 );
 
 SET FOREIGN_KEY_CHECKS=1;
