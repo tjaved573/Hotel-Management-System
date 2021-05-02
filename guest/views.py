@@ -26,6 +26,13 @@ def home(request, guest_id):
             room_feature_set.append(features)
         
         selected_res_info = zip(selected_rooms, room_feature_set)
+
+    elif "delete_reservation" in request.GET:
+        del_res_id = int(request.GET.get('delete_reservation'))
+        print(f"\nTrying to delete reservation {del_res_id}\n")
+        with connection.cursor() as cursor:
+            cursor.callproc('DeleteReservation', [del_res_id])  # Calling the DeleteReservation stored procedure
+
     
     hotels = []
     for reservation in reservations:
@@ -78,8 +85,8 @@ def make_reservation(request, guest_id):
     success = -1    # Variable used to determine what message should be shown
     if request.POST:
         if reservation_form.is_valid():
-            cursor = connection.cursor()
-            cursor.execute('SET TRANSACTION ISOLATION LEVEL REPEATABLE READ')
+            with connection.cursor() as cursor:
+                cursor.execute('SET TRANSACTION ISOLATION LEVEL REPEATABLE READ')
 
             next_res_pk = None
 
@@ -97,7 +104,7 @@ def make_reservation(request, guest_id):
                     feature_total = sum([rel.feature.price for rel in room_feature_rel])
                     total = (room.price_per_night + feature_total) * duration
 
-                    next_res_pk = len(Reservation.objects.all() or []) + 1
+                    next_res_pk = len(Reservation.objects.all() or []) + 1  # TODO: This needs to change ASAP
                     new_reservation = Reservation(
                         reservation_id = next_res_pk,
                         guest_id=guest_id,
@@ -109,7 +116,7 @@ def make_reservation(request, guest_id):
                     )
                     new_reservation.save()
 
-                    next_res_room_rel_pk = len(ReservationRoomRel.objects.all() or []) + 1
+                    next_res_room_rel_pk = len(ReservationRoomRel.objects.all() or []) + 1  # TODO: This needs to change ASAP
                     new_res_room_rel = ReservationRoomRel(id=next_res_room_rel_pk, reservation=new_reservation, room=room)
                     new_res_room_rel.save()
             except IntegrityError:

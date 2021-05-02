@@ -66,6 +66,13 @@ input {
     right: 10em;
 }
 
+.delete-button {
+    background-color:cornflowerblue;
+    border-color:cornflowerblue;
+    margin: 10px;
+    margin-top: 15px;
+}
+
 .form-div {
     text-align: left;
     width: 90%;

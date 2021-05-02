@@ -38,6 +38,9 @@
             <p>Total: {{ reservation.total }}</p>
         </div>
         {% endif %}
+        <form method="GET">
+            <button type="submit" name="delete_reservation" class="btn btn-primary delete-button" value="{{ reservation.reservation_id }}">Delete Record</button>
+        </form>
     </div>
     {% endfor %}
 {% endblock content %}
