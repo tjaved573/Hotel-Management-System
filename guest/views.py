@@ -104,7 +104,10 @@ def make_reservation(request, guest_id):
                     feature_total = sum([rel.feature.price for rel in room_feature_rel])
                     total = (room.price_per_night + feature_total) * duration
 
-                    next_res_pk = len(Reservation.objects.all() or []) + 1  # TODO: This needs to change ASAP
+                    reservation_ids = [res.reservation_id for res in Reservation.objects.all()]
+                    available_ids = [res_id for res_id in range(1, max(reservation_ids)+2) if res_id not in reservation_ids]
+                    next_res_pk = available_ids[0]
+
                     new_reservation = Reservation(
                         reservation_id = next_res_pk,
                         guest_id=guest_id,
@@ -116,7 +119,10 @@ def make_reservation(request, guest_id):
                     )
                     new_reservation.save()
 
-                    next_res_room_rel_pk = len(ReservationRoomRel.objects.all() or []) + 1  # TODO: This needs to change ASAP
+                    res_room_rel_ids = [res.id for res in ReservationRoomRel.objects.all()]
+                    available_ids = [rel_id for rel_id in range(1, max(res_room_rel_ids)+2) if rel_id not in res_room_rel_ids]
+                    next_res_room_rel_pk = available_ids[0]
+
                     new_res_room_rel = ReservationRoomRel(id=next_res_room_rel_pk, reservation=new_reservation, room=room)
                     new_res_room_rel.save()
             except IntegrityError:
