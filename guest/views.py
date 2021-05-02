@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.db import connection, transaction
 from guest.models import Guest, Reservation, ReservationRoomRel, Room, Hotel, Feature, FeatureRoomRel
 from .forms import ReservationForm
 
@@ -74,38 +75,59 @@ def make_reservation(request, guest_id):
     reservation_form = ReservationForm(selected_room_bundle)
     if request.POST:
         reservation_form = ReservationForm(selected_room_bundle, request.POST)
+    success = -1    # Variable used to determine what message should be shown
     if request.POST:
         if reservation_form.is_valid():
-            cd = reservation_form.cleaned_data
-            print(f"\033[92m{cd}\033[0m")
-            room_id = cd['room']
-            room = Room.objects.get(room_id=room_id)
+            cursor = connection.cursor()
+            cursor.execute('SET TRANSACTION ISOLATION LEVEL REPEATABLE READ')
 
-            delta = cd['check_out_date'] - cd['check_in_date']
-            duration = delta.days
+            next_res_pk = None
 
-            room_feature_rel = FeatureRoomRel.objects.all().filter(room_id=room_id)
-            feature_total = sum([rel.feature.price for rel in room_feature_rel])
-            total = (room.price_per_night + feature_total) * duration
+            try:
+                with transaction.atomic():
+                    cd = reservation_form.cleaned_data
+                    print(f"\033[92m{cd}\033[0m")
+                    room_id = cd['room']
+                    room = Room.objects.get(room_id=room_id)
 
-            next_res_pk = len(Reservation.objects.all() or []) + 1
-            new_reservation = Reservation(
-                reservation_id = next_res_pk,
-                guest_id=guest_id,
-                check_in_date=cd['check_in_date'],
-                check_out_date=cd['check_out_date'],
-                payment_type=cd['payment_type'],
-                credit_card_number=cd['credit_card_number'] if len(cd['credit_card_number'])>0 else None,
-                total=total
-            )
-            new_reservation.save()
+                    delta = cd['check_out_date'] - cd['check_in_date']
+                    duration = delta.days
 
-            next_res_room_rel_pk = len(ReservationRoomRel.objects.all() or []) + 1
-            new_res_room_rel = ReservationRoomRel(id=next_res_room_rel_pk, reservation=new_reservation, room=room)
-            new_res_room_rel.save()
+                    room_feature_rel = FeatureRoomRel.objects.all().filter(room_id=room_id)
+                    feature_total = sum([rel.feature.price for rel in room_feature_rel])
+                    total = (room.price_per_night + feature_total) * duration
+
+                    next_res_pk = len(Reservation.objects.all() or []) + 1
+                    new_reservation = Reservation(
+                        reservation_id = next_res_pk,
+                        guest_id=guest_id,
+                        check_in_date=cd['check_in_date'],
+                        check_out_date=cd['check_out_date'],
+                        payment_type=cd['payment_type'],
+                        credit_card_number=cd['credit_card_number'] if len(cd['credit_card_number'])>0 else None,
+                        total=total
+                    )
+                    new_reservation.save()
+
+                    next_res_room_rel_pk = len(ReservationRoomRel.objects.all() or []) + 1
+                    new_res_room_rel = ReservationRoomRel(id=next_res_room_rel_pk, reservation=new_reservation, room=room)
+                    new_res_room_rel.save()
+            except IntegrityError:
+                print("There was an integrity error")
+            
+            if next_res_pk:
+                verify_res = Reservation.objects.all().filter(reservation_id=next_res_pk)
+                verify_rel = ReservationRoomRel.objects.all().filter(reservation=next_res_pk)
+                success = 1 if (len(verify_res) > 0 and len(verify_rel) > 0) else 0
+            else:
+                success = 0
+
+
         else:
             print(f"\033[93mReservation form invalid.\n{reservation_form.errors}\033[0m")
     reservation_form = ReservationForm(selected_room_bundle)
+
+    print(f"Suceess : {success}")
 
     context = {
         'guest_id': guest_id,
@@ -113,6 +135,7 @@ def make_reservation(request, guest_id):
         'hotels': hotels,
         'selected_hotel_id': selected_hotel_id,
         'reservation_form': reservation_form,
+        'success': success
     }
 
     return render(request, 'guest/make_reservation.html', context)

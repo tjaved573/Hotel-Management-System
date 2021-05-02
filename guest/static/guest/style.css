@@ -87,3 +87,20 @@ input {
     border-color: cadetblue;
 }
 
+.success-div {
+    background-color: rgb(195, 231, 192);
+    padding: 10px;
+    margin: 10px;
+    width: 250px;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.failure-div {
+    background-color: rgb(231, 192, 192);
+    padding: 10px;
+    margin: 10px;
+    width: 250px;
+    text-align: center;
+    border-radius: 5px;
+}

@@ -22,6 +22,16 @@
                 {{ reservation_form.as_p }}
                 <input type="submit" value="Make reservation" class="btn button"/>
             </form>
+            {% if success == 1 %}
+            <div class="success-div">
+                <p>Reservation successful!</p>
+            </div>
+            {% endif %}
+            {% if success == 0 %}
+            <div class="failure-div">
+                <p>Something went wrong</p>
+            </div>
+            {% endif %}
         </div>
         {% endif %}
     </div>
