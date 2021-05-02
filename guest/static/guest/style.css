@@ -7,6 +7,27 @@ ul {
     font-size: 15px;
 }
 
+select {
+    width: 200px;
+    padding-left: 5px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    margin-left: 10px;
+    border-radius: 5px;
+    font-size: 15px;
+}
+
+input {
+    width: 200px;
+    padding-left: 5px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    margin-left: 10px;
+    border-radius: 5px;
+    border-width: 1px;
+    font-size: 15px;
+}
+
 .reservation {
     text-align: left;
     width: 90%;
@@ -44,3 +65,25 @@ ul {
     position: absolute;
     right: 10em;
 }
+
+.form-div {
+    text-align: left;
+    width: 90%;
+    background-color: rgb(206, 206, 206);
+    padding: 20px;
+    padding-top: 30px;
+    margin: 20px;
+    border-radius: 5px;
+    font-size:  18px;
+}
+
+.select-option {
+    width: 30%;
+}
+
+.select-hotel-button {
+    margin: 10px;
+    background-color:cadetblue;
+    border-color: cadetblue;
+}
+

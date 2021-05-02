@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from guest.models import Guest, Reservation, ReservationRoomRel, Room, Hotel, Feature, FeatureRoomRel
+from .forms import HotelForm
 
 
 def home(request, guest_id):
@@ -24,7 +25,6 @@ def home(request, guest_id):
             room_feature_set.append(features)
         
         selected_res_info = zip(selected_rooms, room_feature_set)
-
     
     hotels = []
     for reservation in reservations:
@@ -50,3 +50,22 @@ def home(request, guest_id):
     }
 
     return render(request, 'guest/home.html', context)
+
+
+def make_reservation(request, guest_id):
+    guest = Guest.objects.get(guest_id=guest_id)
+    hotels = Hotel.objects.all()
+
+    hotel_form = HotelForm(hotels)
+    if 'hotel_select' in request.POST:
+        hotel_form = HotelForm(request.POST)
+
+    context = {
+        'guest_id': guest_id,
+        'guest_name': f"{guest.first} {guest.last}",
+        'hotel_form': hotel_form,
+        # 'hotels': hotels,
+    }
+
+    return render(request, 'guest/make_reservation.html', context)
+
