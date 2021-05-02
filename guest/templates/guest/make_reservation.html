@@ -17,7 +17,11 @@
         </form>
         {% if hotel.hotel_id == selected_hotel_id %}
         <div class="reservation-text">
-            {{ reservation_form.as_p }}
+            <form method="POST">
+                {% csrf_token %}
+                {{ reservation_form.as_p }}
+                <input type="submit" value="Make reservation" class="btn button"/>
+            </form>
         </div>
         {% endif %}
     </div>

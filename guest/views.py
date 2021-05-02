@@ -57,7 +57,7 @@ def make_reservation(request, guest_id):
     hotels = Hotel.objects.all()
 
     selected_hotel_id = None
-    selected_room_bundle = [(None, 'If you are reading this than something has gone wrong')]
+    selected_room_bundle = [('asdf', 'If you are reading this than something has gone wrong')]
     if "select_hotel" in request.GET:   # User has selected a hotel, get room data for that hotel to pass to form
         selected_hotel_id = int(request.GET.get('select_hotel'))
         selected_rooms = Room.objects.all().filter(hotel_id=selected_hotel_id)
@@ -71,7 +71,41 @@ def make_reservation(request, guest_id):
             room_desc_str += f"${room.price_per_night} per night"
             selected_room_bundle.append((room.room_id, room_desc_str))
 
-    reservation_form = ReservationForm(selected_room_bundle)    # Bundled array of (room_id, description) values -> make form
+    reservation_form = ReservationForm(selected_room_bundle)
+    if request.POST:
+        reservation_form = ReservationForm(selected_room_bundle, request.POST)
+    if request.POST:
+        if reservation_form.is_valid():
+            cd = reservation_form.cleaned_data
+            print(f"\033[92m{cd}\033[0m")
+            room_id = cd['room']
+            room = Room.objects.get(room_id=room_id)
+
+            delta = cd['check_out_date'] - cd['check_in_date']
+            duration = delta.days
+
+            room_feature_rel = FeatureRoomRel.objects.all().filter(room_id=room_id)
+            feature_total = sum([rel.feature.price for rel in room_feature_rel])
+            total = (room.price_per_night + feature_total) * duration
+
+            next_res_pk = len(Reservation.objects.all() or []) + 1
+            new_reservation = Reservation(
+                reservation_id = next_res_pk,
+                guest_id=guest_id,
+                check_in_date=cd['check_in_date'],
+                check_out_date=cd['check_out_date'],
+                payment_type=cd['payment_type'],
+                credit_card_number=cd['credit_card_number'] if len(cd['credit_card_number'])>0 else None,
+                total=total
+            )
+            new_reservation.save()
+
+            next_res_room_rel_pk = len(ReservationRoomRel.objects.all() or []) + 1
+            new_res_room_rel = ReservationRoomRel(id=next_res_room_rel_pk, reservation=new_reservation, room=room)
+            new_res_room_rel.save()
+        else:
+            print(f"\033[93mReservation form invalid.\n{reservation_form.errors}\033[0m")
+    reservation_form = ReservationForm(selected_room_bundle)
 
     context = {
         'guest_id': guest_id,

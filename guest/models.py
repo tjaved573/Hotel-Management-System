@@ -23,7 +23,7 @@ class Reservation(models.Model):
     check_out_date      = models.DateField()
     guest_id            = models.IntegerField()
     payment_type        = models.CharField(max_length=10)
-    credit_card_number  = models.CharField(max_length=20)
+    credit_card_number  = models.CharField(max_length=20, null=True)
     total               = models.DecimalField(max_digits=9, decimal_places=2)
 
     def __str__(self):
