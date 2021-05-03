@@ -20,8 +20,19 @@ class ReservationForm(forms.Form):
         self.fields['room'].choices = selected_room_bundle
 
 
+
 # new form for registration of user
 class CreateUserForm(UserCreationForm):
+    firstname = forms.CharField(max_length=12, min_length=4, required=True, help_text='Required: First Name',
+                                widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'First Name'}))
+    lastname = forms.CharField(max_length=12, min_length=4, required=True, help_text='Required: Last Name',
+                               widget=(forms.TextInput(attrs={'class': 'form-control'})))
+    email = forms.EmailField(max_length=50, help_text='Required. Inform a valid email address.', widget=(forms.TextInput(attrs={'class': 'form-control'})))
+
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2']
+        fields = ('firstname', 'lastname', 'username', 'email', 'password1',)
+
+    def __init__ (self, *args, **kwargs):
+        super(UserCreationForm,self).__init__(*args, **kwargs)
+        self.fields.pop ('password2')

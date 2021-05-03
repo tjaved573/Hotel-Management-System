@@ -105,10 +105,14 @@
                         <div class="d-flex justify-content-center mt-3 login_container">
                             <input class="btn login_btn" type="submit" value="Login " />
                         </div>
+
+                        <!-- <div class="mt-4">
+                            <div class="d-flex justify-content-center links">
+                                <a href="{% url 'login' %}" class="ml-2">Login</a>
+                            </div>
+                        </div> -->
                     </form>
                 </div>
-
-                <!-- {{form.errors}} -->
 
                 {% for message in messages %}
                 <p id="messages ">{{message}}</p>

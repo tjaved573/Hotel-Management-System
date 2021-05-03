@@ -18,7 +18,7 @@ from django.urls import path, include
 from guest import views as guest_views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls, name="adminP"),
     path('', include('main_page.urls'), name='main'),
     path('guest/', include('guest.urls'), name='guest'),
     path('register/', guest_views.registerUser, name="register"),
