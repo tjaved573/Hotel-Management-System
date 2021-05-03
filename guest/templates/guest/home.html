@@ -11,7 +11,7 @@
 
 <ul class="nav nav-tabs">
     <li class="active"><a href="#">My reservations</a></li>
-    <li><a href="{% url 'make_a_reservation' '1' %}">Make a reservation</a></li>
+    <li><a href="{% url 'make_a_reservation' %}">Make a reservation</a></li>
 </ul>
 {% for reservation, hotel in reservations_and_hotels %}
 <div class="reservation">

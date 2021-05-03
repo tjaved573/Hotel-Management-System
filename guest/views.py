@@ -20,7 +20,11 @@ def registerUser(request):
             form.save()
 
             # save user in guest database
+            guest_ids = [guest.guest_id for guest in Guest.objects.all()]
+            available_ids = [g_id for g_id in range(1, max(guest_ids)+2) if g_id not in guest_ids]
+            next_guest_pk = available_ids[0]
             g = Guest()
+            g.guest_id = next_guest_pk
             g.username = form.cleaned_data.get('username')
             g.first = form.cleaned_data.get('firstname')
             g.last = form.cleaned_data.get('lastname')
@@ -56,7 +60,7 @@ def loginUser(request):
             login(request, user)
 
             # TODO :find id against username, from local db and add here
-            return redirect('guest_home', g_id)
+            return redirect('guest_home')
 
     context = {}
     return render(request, 'guest/login.html', context)
@@ -67,7 +71,10 @@ def logoutUser(request):
     return redirect('login')
 
 
-def home(request, guest_id):
+def home(request):
+    username = request.user
+    guest_id = Guest.objects.get(username=username).guest_id
+    # print(request.user.is_authenticated)
     guest = Guest.objects.get(guest_id=guest_id)
     reservations = Reservation.objects.all().filter(guest_id=guest_id)
 
@@ -123,7 +130,9 @@ def home(request, guest_id):
     return render(request, 'guest/home.html', context)
 
 
-def make_reservation(request, guest_id):
+def make_reservation(request):
+    username = request.user
+    guest_id = Guest.objects.get(username=username).guest_id
     guest = Guest.objects.get(guest_id=guest_id)
     hotels = Hotel.objects.all()
 
