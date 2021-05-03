@@ -4,6 +4,7 @@ from guest.models import Guest, Reservation, ReservationRoomRel, Room, Hotel, Fe
 from .forms import ReservationForm, CreateUserForm
 from django.db.utils import IntegrityError
 from django.contrib.auth.models import User
+from django.http import HttpResponseRedirect
 
 
 from django.contrib.auth.forms import UserCreationForm
@@ -34,39 +35,41 @@ def registerUser(request):
 
 def loginUser(request):
 
-    if(request.user.is_authenticated):
-        print(request.user)
+    # if(request.user.is_authenticated):
+    #     print(request.user)
         # print('user authenticated')
         # current_user = request.user
         # print("KAKKAKA ")
         # print(current_user)
         # return redirect('adminP')
 
-
     # else:
     #     print('EREERE 1 ')
+
     if(request.method =='POST'):            # if form has been submitted
-        print('EREERE 2 ')
         username = request.POST.get('username')
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
         if(user is not None):
-            # print('this is the user')
-            # print(user)
-            # print(user.username)
+            g_id = Guest.objects.all().filter(username=username)[0].guest_id
+            print('valid user ' + str(g_id) + username)
             login(request, user)
-            return redirect('guest_home', {'username': username})
+
+            # TODO :find id against username, from local db and add here
+            return redirect('guest_home', g_id)
 
     context = {}
     return render(request, 'guest/login.html', context)
 
+def logoutUser(request):
+    logout(request)
+    context = {}
+    return redirect('login')
 
 
-def home(request, username):
-    guest = Guest.objects.get(username=username)
-
-    print(guest)
-    reservations = Reservation.objects.all().filter(username=username)
+def home(request, guest_id):
+    guest = Guest.objects.get(guest_id=guest_id)
+    reservations = Reservation.objects.all().filter(guest_id=guest_id)
 
     selected_reservation_id = None
     selected_res_info = None

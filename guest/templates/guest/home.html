@@ -1,46 +1,53 @@
-{% extends "main_page/base.html" %}
-{% block content %}
-    {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'guest/style.css' %}?{% now 'U' %}">
-    <h1>Welcome {{ guest_name }}!</h1>
+{% extends "main_page/base.html" %} {% block content %} {% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'guest/style.css' %}?{% now 'U' %}" />
+<h1>Welcome {{ guest_name }}</h1>
 
-    <input type="submit" value="Log out" class="btn btn-primary logout-button"/>
+<form method="POST">
+    <!-- <input class="btn btn-primary logout-button"> -->
+    <div class="btn logout-button">
+        <a href="{% url 'logout' %} "> Logout </a>
+    </div>
+</form>
 
-    <ul class="nav nav-tabs">
-        <li class="active"><a href="#">My reservations</a></li>
-        <li><a href="{% url 'make_a_reservation' '1' %}">Make a reservation</a></li>
-    </ul>
-    {% for reservation, hotel in reservations_and_hotels %}
-    <div class="reservation">
-        <form method="GET">
-            <button type="submit" name="get_reservation" class="reservation-button" value="{{ reservation.reservation_id }}">{{ hotel.location }} {{ reservation.check_in_date }} Reservation</button>
-        </form>
-        {% if reservation.reservation_id == selected_reservation_id %}
-        <div class="reservation-text">
-            <p>Check in date: {{ reservation.check_in_date }}</p>
-            <p>Check out date: {{ reservation.check_out_date }}</p>
-            <p>{{ num_selected_rooms }} Room{% if num_selected_rooms > 1 %}s{% endif %}</p>
+<ul class="nav nav-tabs">
+    <li class="active"><a href="#">My reservations</a></li>
+    <li><a href="{% url 'make_a_reservation' '1' %}">Make a reservation</a></li>
+</ul>
+{% for reservation, hotel in reservations_and_hotels %}
+<div class="reservation">
+    <form method="GET">
+        <button type="submit" name="get_reservation" class="reservation-button" value="{{ reservation.reservation_id }}">
+      {{ hotel.location }} {{ reservation.check_in_date }} Reservation
+    </button>
+    </form>
+    {% if reservation.reservation_id == selected_reservation_id %}
+    <div class="reservation-text">
+        <p>Check in date: {{ reservation.check_in_date }}</p>
+        <p>Check out date: {{ reservation.check_out_date }}</p>
+        <p>
+            {{ num_selected_rooms }} Room{% if num_selected_rooms > 1 %}s{% endif %}
+        </p>
+        <div class="room-desc">
+            {% for room, features in selected_res_info %}
+            <p class="room-desc-text">
+                {{ room.room_type|title }}, ${{ room.price_per_night }} per night
+            </p>
             <div class="room-desc">
-                {% for room, features in selected_res_info %}
-                <p class="room-desc-text">{{ room.room_type|title }}, ${{ room.price_per_night }} per night</p>
-                <div class="room-desc">
-                    {% for feature in features %}
-                    <p class="room-desc-text" style="margin-bottom: 0px;">{{ feature.feature|title }}, +${{ feature.price }} per night</p>
-                    {% endfor %}
-                </div>
+                {% for feature in features %}
+                <p class="room-desc-text" style="margin-bottom: 0px">
+                    {{ feature.feature|title }}, +${{ feature.price }} per night
+                </p>
                 {% endfor %}
             </div>
-
-            <p>Payment type: {{ reservation.payment_type }}</p>
-            {% if reservation.payment_type == 'credit' %}
-            <p>Credit card number: {{ reservation.credit_card_number }}</p>
-            {% endif %}
-            <p>Total: {{ reservation.total }}</p>
+            {% endfor %}
         </div>
+
+        <p>Payment type: {{ reservation.payment_type }}</p>
+        {% if reservation.payment_type == 'credit' %}
+        <p>Credit card number: {{ reservation.credit_card_number }}</p>
         {% endif %}
-        <form method="GET">
-            <button type="submit" name="delete_reservation" class="btn btn-primary delete-button" value="{{ reservation.reservation_id }}">Delete Record</button>
-        </form>
+        <p>Total: {{ reservation.total }}</p>
     </div>
-    {% endfor %}
-{% endblock content %}
+    {% endif %}
+</div>
+{% endfor %} {% endblock content %}

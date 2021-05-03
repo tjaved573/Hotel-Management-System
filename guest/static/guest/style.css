@@ -35,7 +35,7 @@ input {
     padding: 20px;
     margin: 20px;
     border-radius: 5px;
-    font-size:  18px;
+    font-size: 18px;
 }
 
 .reservation-button {
@@ -64,11 +64,14 @@ input {
 .logout-button {
     position: absolute;
     right: 10em;
+    width: 10em;
+    color: black;
+    background-color: aliceblue;
 }
 
 .delete-button {
-    background-color:cornflowerblue;
-    border-color:cornflowerblue;
+    background-color: cornflowerblue;
+    border-color: cornflowerblue;
     margin: 10px;
     margin-top: 15px;
 }
@@ -81,7 +84,7 @@ input {
     padding-top: 30px;
     margin: 20px;
     border-radius: 5px;
-    font-size:  18px;
+    font-size: 18px;
 }
 
 .select-option {
@@ -90,7 +93,7 @@ input {
 
 .select-hotel-button {
     margin: 10px;
-    background-color:cadetblue;
+    background-color: cadetblue;
     border-color: cadetblue;
 }
 

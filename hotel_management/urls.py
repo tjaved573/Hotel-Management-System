@@ -22,5 +22,6 @@ urlpatterns = [
     path('', include('main_page.urls'), name='main'),
     path('guest/', include('guest.urls'), name='guest'),
     path('register/', guest_views.registerUser, name="register"),
-    path('login/', guest_views.loginUser, name="login")
+    path('login/', guest_views.loginUser, name="login"),
+    path('logout/', guest_views.logoutUser, name="logout")
 ]
