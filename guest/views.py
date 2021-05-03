@@ -1,7 +1,45 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.db import connection, transaction
 from guest.models import Guest, Reservation, ReservationRoomRel, Room, Hotel, Feature, FeatureRoomRel
-from .forms import ReservationForm
+from .forms import ReservationForm, CreateUserForm
+from django.db.utils import IntegrityError
+from django.contrib.auth.models import User
+
+
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages
+
+from django.contrib.auth import authenticate, login, logout
+
+def registerUser(request):
+    form = CreateUserForm()
+    if(request.method == 'POST'):
+        form = CreateUserForm(request.POST)
+        if(form.is_valid()):
+            form.save()
+            user = form.cleaned_data.get('username')
+            messages.success(request, 'Account successfully created for ' + user)
+            return redirect('login')
+
+    context = {'form': form}
+    return render(request, 'guest/register.html', context)
+
+def loginUser(request):
+    
+    if(request.method =='POST'):
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        # print('the user is ' + User.objects.get(username=username).username)
+        context = {'username': username}
+
+        user = authenticate(request, username=username, password=password)
+        if(user is not None):
+            login(request, user)
+            return redirect('guest/', {'id': username})
+
+    context = {}
+    return render(request, 'guest/login.html', context)
 
 
 def home(request, guest_id):
@@ -64,6 +102,9 @@ def make_reservation(request, guest_id):
     guest = Guest.objects.get(guest_id=guest_id)
     hotels = Hotel.objects.all()
 
+    print("gyest values  ", guest)          # debugging
+    print("hotel value  ", hotels)          # debugging
+
     selected_hotel_id = None
     selected_room_bundle = [('asdf', 'If you are reading this than something has gone wrong')]
     if "select_hotel" in request.GET:   # User has selected a hotel, get room data for that hotel to pass to form
@@ -78,6 +119,8 @@ def make_reservation(request, guest_id):
                 room_desc_str += ', '.join(feature_names) + ", "
             room_desc_str += f"${room.price_per_night} per night"
             selected_room_bundle.append((room.room_id, room_desc_str))
+
+    print("hahahahhaha ", selected_room_bundle)
 
     reservation_form = ReservationForm(selected_room_bundle)
     if request.POST:
