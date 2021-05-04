@@ -183,7 +183,7 @@ def make_reservation(request):
                     room_id = cd['room']
                     room = Room.objects.get(room_id=room_id)
 
-                    # CHECK IF ROOM AVAILABLE - SANITY CHECK
+                    # CHECK IF ROOM AVAILABLE - SANITY
                     if (room.available == 1):
                         
                         delta = cd['check_out_date'] - cd['check_in_date']
@@ -198,6 +198,9 @@ def make_reservation(request):
                         available_ids = [1] if (reservation_ids==None or len(reservation_ids) == 0) else [res_id for res_id in range(1, max(reservation_ids)+2) if res_id not in reservation_ids]
                         next_res_pk = available_ids[0]
 
+
+                        # Make credit card number compulsory for credit card option
+
                         new_reservation = Reservation(
                             reservation_id = next_res_pk,
                             guest_id=guest_id,
@@ -210,28 +213,25 @@ def make_reservation(request):
                         new_reservation.save()
 
                         # DELIMITER //
-                        # CREATE PROCEDURE updtRoomAvailable(
-                        # 	IN room_id int
+                        # CREATE PROCEDURE unReserveRoom (
+                        #     r_id INT
                         # )
                         # BEGIN
-                        # 	UPDATE room 
-                        #      	SET available=0 
-                        #      	WHERE room_id = room_id;
+                        #     UPDATE room 
+                        #         SET available=0
+                        #         WHERE room_id = r_id;
                         # END //
                         # DELIMITER ;
 
                         # Changing Room Availability ONCE RESERVED 
-                        room = Room.objects.get(room_id=room_id)
-                        room.available= 0
-                        print('room reserved, not available anymore ')
-                        room.save()
+                        # room = Room.objects.get(room_id=room_id)
+                        # room.available= 0
+                        # print('room reserved, not available anymore ')
+                        # room.save()
 
-                        # print('executing cursor now')
-                        # print(room_id)
-                        # with connection.cursor() as cursor:
-                        #     cursor.callproc("trw", [room_id])
-                        #     # cursor.execute('CREATE PROCEDURE UpdateRoomTable AS UPDATE room SET available = 0 where room_id = room_id') 
-                        #     # cursor.close()
+                        print('executing cursor to make room unavailable' + str(room_id))
+                        with connection.cursor() as cursor:
+                            cursor.callproc('unReserveRoom', [room_id])
 
                         res_room_rel_ids = [res.id for res in ReservationRoomRel.objects.all()]
                         available_ids = [1] if (res_room_rel_ids==None or len(res_room_rel_ids) == 0) else [rel_id for rel_id in range(1, max(res_room_rel_ids)+2) if rel_id not in res_room_rel_ids]
