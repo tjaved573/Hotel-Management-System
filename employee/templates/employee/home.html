@@ -1,0 +1,13 @@
+{% extends "main_page/base.html" %}
+{% block content %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'employee/style.css' %}?{% now 'U' %}">
+    <h1>Welcome {{ employee_name }}!</h1>
+
+    <input type="submit" value="Log out" class="btn btn-primary logout-button"/>
+
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#">Reservations for {{ hotel.location }}</a></li>
+        <li><a href="#">Something else</a></li>
+    </ul>
+{% endblock content %}

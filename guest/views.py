@@ -134,18 +134,7 @@ def home(request):
     elif "delete_reservation" in request.GET:
         del_res_id = int(request.GET.get('delete_reservation'))
         print(f"\nTrying to delete reservation {del_res_id}\n")
-        with connection.cursor() as cursor:
-            
-            # cursor.execute('SELECT rr.room_id FROM reservation_room_rel rr WHERE rr.reservation_id = %d;' % del_res_id)
-            # ans = cursor.fetchone()
-            # tenmp = ans[0]
-            # print(tenmp)
-            # cursor.execute('UPDATE room r set available = 100 where r.room_id = %d;' % tenmp)
-            
-            
-            
-            
-            
+        with connection.cursor() as cursor:            
             cursor.callproc('DeleteReservation', [del_res_id])  # Calling the DeleteReservation stored procedure
 
     
@@ -173,16 +162,6 @@ def home(request):
     }
 
     return render(request, 'guest/home.html', context)
-
-
-# def cancel_reservation(request, reservation_id):
-#     print('hahaha request = ')
-#     print(request.GET)
-#     print(reservation_id)
-#     return render(request, 'guest_home')
-
-
-#     #run stored procedure for deleting user from here
 
 
 def make_reservation(request):
