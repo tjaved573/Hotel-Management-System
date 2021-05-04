@@ -11,7 +11,7 @@
 
 <ul class="nav nav-tabs">
     <li class="active"><a href="#">My reservations</a></li>
-    <li><a href="{% url 'make_a_reservation' %}">Make a reservation</a></li>
+    <li><a href="{% url 'make_a_reservation'%}">Make a reservation</a></li>
 </ul>
 {% for reservation, hotel in reservations_and_hotels %}
 <div class="reservation">
@@ -47,7 +47,17 @@
         <p>Credit card number: {{ reservation.credit_card_number }}</p>
         {% endif %}
         <p>Total: {{ reservation.total }}</p>
+
+        <button type="submit" name="get_reservation" class="reservation-button" value="{{ reservation.reservation_id }}">
+      Cancel Reservation
+    </button>
+
+        <!-- <form method="POST">
+            {% csrf_token %} {{ reservation_form.as_p }}
+            <input type="submit" value="Cancel reservation" class="btn button" />
+        </form> -->
     </div>
+
     {% endif %}
 </div>
 {% endfor %} {% endblock content %}

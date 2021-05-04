@@ -19,8 +19,6 @@ class ReservationForm(forms.Form):
         super(ReservationForm,self).__init__(*args,**kwargs)
         self.fields['room'].choices = selected_room_bundle
 
-
-
 # new form for registration of user
 class CreateUserForm(UserCreationForm):
     firstname = forms.CharField(max_length=12, min_length=4, required=True, help_text='Required: First Name',
@@ -36,3 +34,15 @@ class CreateUserForm(UserCreationForm):
     def __init__ (self, *args, **kwargs):
         super(UserCreationForm,self).__init__(*args, **kwargs)
         self.fields.pop ('password2')
+
+
+class FilterForm(forms.Form):
+    lower_price = forms.DecimalField(max_digits=5, decimal_places=2, help_text='Required: Lower Search Price')
+
+    class Meta:
+        model = User
+        fields = ('lower_price',)
+
+    def __init__ (self, *args, **kwargs):
+        super(FilterForm,self).__init__(*args, **kwargs)
+

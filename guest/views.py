@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.db import connection, transaction
 from guest.models import Guest, Reservation, ReservationRoomRel, Room, Hotel, Feature, FeatureRoomRel
-from .forms import ReservationForm, CreateUserForm
+from .forms import ReservationForm, CreateUserForm, FilterForm
 from django.db.utils import IntegrityError
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
@@ -11,6 +11,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 
 from django.contrib.auth import authenticate, login, logout
+from django.urls import reverse
 
 def registerUser(request):
     form = CreateUserForm(request.POST)
@@ -35,20 +36,10 @@ def registerUser(request):
             return redirect('login')
 
     context = {'form': form}
+
     return render(request, 'guest/register.html', context)
 
 def loginUser(request):
-
-    # if(request.user.is_authenticated):
-    #     print(request.user)
-        # print('user authenticated')
-        # current_user = request.user
-        # print("KAKKAKA ")
-        # print(current_user)
-        # return redirect('adminP')
-
-    # else:
-    #     print('EREERE 1 ')
 
     if(request.method =='POST'):            # if form has been submitted
         username = request.POST.get('username')
@@ -79,6 +70,40 @@ def updateRoomAvailability(request, room_id):
         cursor.close()
                     
 
+def filterByPrice(request):
+    username = request.user
+    guest_id = Guest.objects.get(username=username).guest_id
+    guest = Guest.objects.get(guest_id=guest_id)
+    hotels = []
+
+    print('guest_id = ', guest_id)
+    print('username = ', username)
+
+    form = FilterForm(request.POST)
+    if(request.method == 'POST'):
+
+        form = FilterForm(request.POST)
+        
+        if(form.is_valid()):
+            lower_p = form.cleaned_data.get('lower_price')
+
+            lp = int(request.POST['lower_price'])
+
+            #'select h.hotel_id, location, room_type, price_per_night, check_in_time, check_out_time from hotel h inner join room r on r.hotel_id = h.hotel_id where price_per_night > %d;
+            with connection.cursor() as cursor:
+                cursor.execute( 'select h.hotel_id, location from hotel h inner join room r on r.hotel_id = h.hotel_id where price_per_night > %d;' % lp)
+                columns = [col[0] for col in cursor.description]
+                ans = cursor.fetchall()
+
+                # STILL TO DO 
+                # add pair here, 
+
+            context = {'hotels': hotels}
+            return render(request, 'guest/make_reservation.html', context = {'hotels': hotels})
+            # return HttpResponseRedirect(reverse('make_a_reservation', kwargs={context}))
+
+    context = {'form': form}
+    return render(request, 'guest/findOpenReservations.html', context)
 
 def home(request):
     username = request.user
@@ -140,9 +165,14 @@ def home(request):
 
 
 def make_reservation(request):
+
+    print('incoming request = ')
+    print(request)
+
     username = request.user
     guest_id = Guest.objects.get(username=username).guest_id
     guest = Guest.objects.get(guest_id=guest_id)
+
     hotels = Hotel.objects.all()
 
     print("gyest values  ", guest)          # debugging
@@ -151,6 +181,7 @@ def make_reservation(request):
     selected_hotel_id = None
     selected_room_bundle = [('asdf', 'If you are reading this than something has gone wrong')]
     if "select_hotel" in request.GET:   # User has selected a hotel, get room data for that hotel to pass to form
+
         selected_hotel_id = int(request.GET.get('select_hotel'))
         selected_rooms = Room.objects.all().filter(hotel_id=selected_hotel_id)
         selected_room_bundle = []
