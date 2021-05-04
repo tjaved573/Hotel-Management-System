@@ -48,14 +48,11 @@
         {% endif %}
         <p>Total: {{ reservation.total }}</p>
 
-        <button type="submit" name="get_reservation" class="reservation-button" value="{{ reservation.reservation_id }}">
-      Cancel Reservation
-    </button>
-
-        <!-- <form method="POST">
-            {% csrf_token %} {{ reservation_form.as_p }}
-            <input type="submit" value="Cancel reservation" class="btn button" />
-        </form> -->
+        <form method="GET">
+            <button name="delete_reservation" type="submit" class="btn btn-primary" value=" {{reservation.reservation_id }}">
+        DELETE RESERVATION
+      </button>
+        </form>
     </div>
 
     {% endif %}
