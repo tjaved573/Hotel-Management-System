@@ -71,6 +71,15 @@ def logoutUser(request):
     return redirect('login')
 
 
+def updateRoomAvailability(request, room_id):
+     # STORED PROCEDURE
+    with connection.cursor() as cursor:
+        cursor.callproc("updtRoomAvailable", [room_id,] )
+        # cursor.execute('CREATE PROCEDURE UpdateRoomTable AS UPDATE room SET available = 0 where room_id = room_id') 
+        cursor.close()
+                    
+
+
 def home(request):
     username = request.user
     guest_id = Guest.objects.get(username=username).guest_id
@@ -154,7 +163,7 @@ def make_reservation(request):
             room_desc_str += f"${room.price_per_night} per night"
             selected_room_bundle.append((room.room_id, room_desc_str))
 
-    print("hahahahhaha ", selected_room_bundle)
+    print("selected room bundle: ", selected_room_bundle)
 
     reservation_form = ReservationForm(selected_room_bundle)
     if request.POST:
@@ -174,36 +183,64 @@ def make_reservation(request):
                     room_id = cd['room']
                     room = Room.objects.get(room_id=room_id)
 
-                    delta = cd['check_out_date'] - cd['check_in_date']
-                    duration = delta.days
+                    # CHECK IF ROOM AVAILABLE - SANITY CHECK
+                    if (room.available == 1):
+                        
+                        delta = cd['check_out_date'] - cd['check_in_date']
+                        duration = delta.days
 
-                    room_feature_rel = FeatureRoomRel.objects.all().filter(room_id=room_id)
-                    feature_total = sum([rel.feature.price for rel in room_feature_rel])
-                    total = (room.price_per_night + feature_total) * duration
+                        room_feature_rel = FeatureRoomRel.objects.all().filter(room_id=room_id)
+                        feature_total = sum([rel.feature.price for rel in room_feature_rel])
+                        total = (room.price_per_night + feature_total) * duration
 
-                    reservation_ids = [res.reservation_id for res in Reservation.objects.all()]
-                    # available_ids = [res_id for res_id in range(1, max(reservation_ids)+2) if res_id not in reservation_ids]
-                    available_ids = [1] if (reservation_ids==None or len(reservation_ids) == 0) else [res_id for res_id in range(1, max(reservation_ids)+2) if res_id not in reservation_ids]
-                    next_res_pk = available_ids[0]
+                        reservation_ids = [res.reservation_id for res in Reservation.objects.all()]
+                        # available_ids = [res_id for res_id in range(1, max(reservation_ids)+2) if res_id not in reservation_ids]
+                        available_ids = [1] if (reservation_ids==None or len(reservation_ids) == 0) else [res_id for res_id in range(1, max(reservation_ids)+2) if res_id not in reservation_ids]
+                        next_res_pk = available_ids[0]
 
-                    new_reservation = Reservation(
-                        reservation_id = next_res_pk,
-                        guest_id=guest_id,
-                        check_in_date=cd['check_in_date'],
-                        check_out_date=cd['check_out_date'],
-                        payment_type=cd['payment_type'],
-                        credit_card_number=cd['credit_card_number'] if len(cd['credit_card_number'])>0 else None,
-                        total=total
-                    )
-                    new_reservation.save()
+                        new_reservation = Reservation(
+                            reservation_id = next_res_pk,
+                            guest_id=guest_id,
+                            check_in_date=cd['check_in_date'],
+                            check_out_date=cd['check_out_date'],
+                            payment_type=cd['payment_type'],
+                            credit_card_number=cd['credit_card_number'] if len(cd['credit_card_number'])>0 else None,
+                            total=total
+                        )
+                        new_reservation.save()
 
-                    res_room_rel_ids = [res.id for res in ReservationRoomRel.objects.all()]
-                    available_ids = [1] if (res_room_rel_ids==None or len(res_room_rel_ids) == 0) else [rel_id for rel_id in range(1, max(res_room_rel_ids)+2) if rel_id not in res_room_rel_ids]
-                    # available_ids = [rel_id for rel_id in range(1, max(res_room_rel_ids)+2) if rel_id not in res_room_rel_ids]
-                    next_res_room_rel_pk = available_ids[0]
+                        # DELIMITER //
+                        # CREATE PROCEDURE updtRoomAvailable(
+                        # 	IN room_id int
+                        # )
+                        # BEGIN
+                        # 	UPDATE room 
+                        #      	SET available=0 
+                        #      	WHERE room_id = room_id;
+                        # END //
+                        # DELIMITER ;
 
-                    new_res_room_rel = ReservationRoomRel(id=next_res_room_rel_pk, reservation=new_reservation, room=room)
-                    new_res_room_rel.save()
+                        # Changing Room Availability ONCE RESERVED 
+                        room = Room.objects.get(room_id=room_id)
+                        room.available= 0
+                        print('room reserved, not available anymore ')
+                        room.save()
+
+                        # print('executing cursor now')
+                        # print(room_id)
+                        # with connection.cursor() as cursor:
+                        #     cursor.callproc("trw", [room_id])
+                        #     # cursor.execute('CREATE PROCEDURE UpdateRoomTable AS UPDATE room SET available = 0 where room_id = room_id') 
+                        #     # cursor.close()
+
+                        res_room_rel_ids = [res.id for res in ReservationRoomRel.objects.all()]
+                        available_ids = [1] if (res_room_rel_ids==None or len(res_room_rel_ids) == 0) else [rel_id for rel_id in range(1, max(res_room_rel_ids)+2) if rel_id not in res_room_rel_ids]
+                        # available_ids = [rel_id for rel_id in range(1, max(res_room_rel_ids)+2) if rel_id not in res_room_rel_ids]
+                        next_res_room_rel_pk = available_ids[0]
+
+                        new_res_room_rel = ReservationRoomRel(id=next_res_room_rel_pk, reservation=new_reservation, room=room)
+                        new_res_room_rel.save()
+
             except IntegrityError:
                 print("There was an integrity error")
             
