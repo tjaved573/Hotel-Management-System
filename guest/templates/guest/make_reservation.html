@@ -1,39 +1,42 @@
-{% extends "main_page/base.html" %}
-{% block content %}
-    {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'guest/style.css' %}?{% now 'U' %}">
-    <h1>Welcome {{ guest_name }}!</h1>
+{% extends "main_page/base.html" %} {% block content %} {% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'guest/style.css' %}?{% now 'U' %}" />
+<h1>Welcome {{ guest_name }}!</h1>
 
-    <input type="submit" value="Log out" class="btn btn-primary logout-button"/>
+<!-- <input type="submit" value="Log out" class="btn btn-primary logout-button"/> -->
+<form method="POST">
+    <!-- <input class="btn btn-primary logout-button"> -->
+    <div class="btn logout-button">
+        <a href="{% url 'logout' %} "> Logout </a>
+    </div>
+</form>
 
-    <ul class="nav nav-tabs">
-        <li><a href="{% url 'guest_home' %}">My reservations</a></li>
-        <li class="active"><a href="#">Make a reservation</a></li>
-    </ul>
-    {% for hotel in hotels %}
-    <div class="reservation">
-        <form method="GET">
-            <button type="submit" name="select_hotel" class="reservation-button" value="{{ hotel.hotel_id }}"><u>{{ hotel.location }}</u></button>
+<ul class="nav nav-tabs">
+    <li><a href="{% url 'guest_home' %}">My reservations</a></li>
+    <li class="active"><a href="#">Make a reservation</a></li>
+</ul>
+{% for hotel in hotels %}
+<div class="reservation">
+    <form method="GET">
+        <button type="submit" name="select_hotel" class="reservation-button" value="{{ hotel.hotel_id }}">
+      <u>{{ hotel.location }}</u>
+    </button>
+    </form>
+    {% if hotel.hotel_id == selected_hotel_id %}
+    <div class="reservation-text">
+        <form method="POST">
+            {% csrf_token %} {{ reservation_form.as_p }}
+            <input type="submit" value="Make reservation" class="btn button" />
         </form>
-        {% if hotel.hotel_id == selected_hotel_id %}
-        <div class="reservation-text">
-            <form method="POST">
-                {% csrf_token %}
-                {{ reservation_form.as_p }}
-                <input type="submit" value="Make reservation" class="btn button"/>
-            </form>
-            {% if success == 1 %}
-            <div class="success-div">
-                <p>Reservation successful!</p>
-            </div>
-            {% endif %}
-            {% if success == 0 %}
-            <div class="failure-div">
-                <p>Something went wrong</p>
-            </div>
-            {% endif %}
+        {% if success == 1 %}
+        <div class="success-div">
+            <p>Reservation successful!</p>
+        </div>
+        {% endif %} {% if success == 0 %}
+        <div class="failure-div">
+            <p>Something went wrong</p>
         </div>
         {% endif %}
     </div>
-    {% endfor %}
-{% endblock content %}
+    {% endif %}
+</div>
+{% endfor %} {% endblock content %}

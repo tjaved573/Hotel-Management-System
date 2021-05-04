@@ -182,7 +182,8 @@ def make_reservation(request):
                     total = (room.price_per_night + feature_total) * duration
 
                     reservation_ids = [res.reservation_id for res in Reservation.objects.all()]
-                    available_ids = [res_id for res_id in range(1, max(reservation_ids)+2) if res_id not in reservation_ids]
+                    # available_ids = [res_id for res_id in range(1, max(reservation_ids)+2) if res_id not in reservation_ids]
+                    available_ids = [1] if (reservation_ids==None or len(reservation_ids) == 0) else [res_id for res_id in range(1, max(reservation_ids)+2) if res_id not in reservation_ids]
                     next_res_pk = available_ids[0]
 
                     new_reservation = Reservation(
@@ -197,7 +198,8 @@ def make_reservation(request):
                     new_reservation.save()
 
                     res_room_rel_ids = [res.id for res in ReservationRoomRel.objects.all()]
-                    available_ids = [rel_id for rel_id in range(1, max(res_room_rel_ids)+2) if rel_id not in res_room_rel_ids]
+                    available_ids = [1] if (res_room_rel_ids==None or len(res_room_rel_ids) == 0) else [rel_id for rel_id in range(1, max(res_room_rel_ids)+2) if rel_id not in res_room_rel_ids]
+                    # available_ids = [rel_id for rel_id in range(1, max(res_room_rel_ids)+2) if rel_id not in res_room_rel_ids]
                     next_res_room_rel_pk = available_ids[0]
 
                     new_res_room_rel = ReservationRoomRel(id=next_res_room_rel_pk, reservation=new_reservation, room=room)
