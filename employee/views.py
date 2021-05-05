@@ -35,7 +35,6 @@ def registerUser(request):
             e = Employee(
                 employee_id = next_employee_pk,
                 username    = username,
-                hotel_id    = hotel_id,
                 first       = first,
                 last        = last,
             )

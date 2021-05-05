@@ -6,37 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('main_page', '0003_feature'),
     ]
 
     operations = [
-        migrations.CreateModel(
-            name='Guest',
-            fields=[
-                ('guest_id', models.IntegerField(primary_key=True, serialize=False)),
-                ('first', models.CharField(max_length=20)),
-                ('last', models.CharField(max_length=20)),
-            ],
-        ),
-        migrations.CreateModel(
-            name='Room',
-            fields=[
-                ('room_id', models.IntegerField(primary_key=True, serialize=False)),
-                ('hotel_id', models.IntegerField()),
-                ('room_type', models.CharField(max_length=20)),
-                ('price_per_night', models.DecimalField(decimal_places=2, max_digits=5)),
-                ('available', models.IntegerField()),
-                ('check_in_time', models.TimeField()),
-                ('check_out_time', models.TimeField()),
-            ],
-        ),
-        migrations.RemoveField(
-            model_name='feature',
-            name='id',
-        ),
-        migrations.AlterField(
-            model_name='feature',
-            name='feature_id',
-            field=models.IntegerField(primary_key=True, serialize=False),
-        ),
     ]

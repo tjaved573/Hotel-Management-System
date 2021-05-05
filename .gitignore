@@ -1,2 +1,8 @@
 venv/
 .DS_Store
+# *.pyc
+# __pycache__/*
+# */__pycache__/*
+# guest/migrations/__pycache__/*
+# employee/migrations/__pycache__/*
+# main_page/migrations/__pycache__/*
