@@ -118,12 +118,17 @@ def all_hotels_info(request):
     ranked_hotels = []
 
     with connection.cursor() as cursor:
-        cursor.callproc('RankHotels', [])
-        results = cursor.fetchall()
+        cursor.execute('SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED')
+    try:
+        with transaction.atomic(), connection.cursor() as cursor:
+            cursor.callproc('RankHotels', [])
+            results = cursor.fetchall()
 
-        for row in results:
-            ranked_hotels.append(row)
-            # print(f"\033[94m{row}\033[0m")
+            for row in results:
+                ranked_hotels.append(row)
+                # print(f"\033[94m{row}\033[0m")
+    except IntegrityError:
+        print("There was an integrity error")
 
     context = {
         'employee_name': f"{employee.first} {employee.last}",
