@@ -1,0 +1,32 @@
+{% extends "main_page/base.html" %}
+{% block content %}
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'main_page/style.css' %}?{% now 'U' %}">
+  <div class="container login-card">
+    <h1>Log in {{ entity }}</h1>
+    <form method="POST" class="{{ entity }}">
+      {% csrf_token %}
+      <div>
+        <span class="glyphicon glyphicon-user"></span>
+        <input type="text" name="username" placeholder="Enter username"/>
+      </div>
+      <div>
+        <span class="glyphicon glyphicon-lock"></span>
+        <input type="password" name="password" placeholder="Enter password"/>
+      </div>
+      <div class="row">
+        <div class="col-sm-6">
+          <a class="btn btn-primary button" href="{% url 'main_page_home' %}" role="button">Back to home</a>
+        </div>
+        <div class="row">
+          <input type="submit" value="Continue" class="btn button {{ entity }}-button"/>
+        </div>
+      </div>
+      {% if form.errors %}
+        <p class="error">Missing or incorrect fields.</p>
+      {% endif %}
+    </form>
+  </div>
+  
+  
+{% endblock content %}

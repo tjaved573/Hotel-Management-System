@@ -7,4 +7,10 @@ python manage.py runserver <br />
 DB instance on GCP: HotelManagementSystem-CS348 <br />
 DB name on GCP: datacs348project <br />
 
-Our Stage 2 document for grading: https://purdue0-my.sharepoint.com/:w:/r/personal/jschweit_purdue_edu/_layouts/15/Doc.aspx?sourcedoc=%7B1A90FB77-13AB-485F-98BC-C2FEA3C37F6D%7D&file=Stage2.docx&action=default&mobileredirect=true <br />
+
+Indexes:<br />
+
+create index room_index on room (price_per_night); <br />
+create index room_av_index on room (available); <br />
+create index av_rating on hotel (rating);<br />
+create index hotel_occupancy on hotel (occupancy);<br />

@@ -1,0 +1,42 @@
+h1 {
+    color: rgb(255, 149, 149);
+}
+
+h2 {
+    margin: 10px;
+    margin-bottom: 20px;
+}
+
+ul {
+    padding: 20px;
+    font-size: 15px;
+}
+
+li {
+    margin: 10px;
+}
+
+
+.logout-button {
+    position: absolute;
+    right: 10em;
+    width: 10em;
+    color: black;
+    background-color: aliceblue;
+}
+
+.reservation {
+    position: static;
+    text-align: left;
+    width: 90%;
+    background-color: rgb(206, 206, 206);
+    padding: 20px;
+    margin: 20px;
+    border-radius: 5px;
+    font-size: 18px;
+}
+
+.reservation-text {
+    background-color: rgb(206, 206, 206);
+    margin: 10px;
+}

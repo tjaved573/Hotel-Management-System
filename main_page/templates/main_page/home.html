@@ -1,0 +1,24 @@
+{% extends "main_page/base.html" %} {% block content %} {% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'main_page/style.css' %}" />
+<div class="jumbotron text-center">
+    <h1>Hotel Management System</h1>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6 text-center">
+            <a class="btn btn-primary entity-button" name="guest_login" style="background-color: rgb(119, 214, 151)" href="{% url 'guest_login'%}">Guest Login</a
+      >
+    </div>
+
+    <div class="col-sm-6 text-center">
+      <a
+        class="btn btn-primary entity-button"
+        name="employee_login"
+        style="background-color: rgb(108, 211, 245)"
+        href="{% url 'employee_login' %}"
+        >Employee Login</a
+      >
+    </div>
+  </div>
+</div>
+{% endblock content %}

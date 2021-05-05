@@ -8,6 +8,7 @@ DROP TABLE IF EXISTS features;
 DROP TABLE IF EXISTS feature_room_rel;
 DROP TABLE IF EXISTS reservation_room_rel;
 
+-- Data should be present here on start up
 CREATE TABLE hotel (
     hotel_id integer NOT NULL,
     location varchar(20),
@@ -17,6 +18,7 @@ CREATE TABLE hotel (
     PRIMARY KEY (hotel_id)
 );
 
+-- Data should be present here on start up
 CREATE TABLE room (
     room_id integer NOT NULL,
     hotel_id integer,
@@ -30,9 +32,19 @@ CREATE TABLE room (
 
 CREATE TABLE guest (
     guest_id integer NOT NULL,
+    username varchar(50),
     first varchar(20),
     last varchar(20),
     PRIMARY KEY (guest_id)
+);
+
+CREATE TABLE employee (
+    employee_id integer NOT NULL,
+    username varchar(50),
+    hotel_id integer,
+    first varchar(20),
+    last varchar(20),
+    PRIMARY KEY (employee_id)
 );
 
 CREATE TABLE reservation (
@@ -46,6 +58,7 @@ CREATE TABLE reservation (
     PRIMARY KEY (reservation_id)
 );
 
+-- Data should be present here on start up
 CREATE TABLE features (
     feature_id integer NOT NULL,
     feature varchar(20),
@@ -54,16 +67,19 @@ CREATE TABLE features (
     PRIMARY KEY (feature_id)
 );
 
+-- Data should be present here on start up
 CREATE TABLE feature_room_rel (
+    id bigint NOT NULL AUTO_INCREMENT,
     feature_id integer NOT NULL,
     room_id integer NOT NULL,
-    PRIMARY KEY (feature_id, room_id)
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE reservation_room_rel (
+    id bigint NOT NULL AUTO_INCREMENT,
     reservation_id integer NOT NULL,
     room_id integer NOT NULL,
-    PRIMARY KEY (reservation_id, room_id)
+    PRIMARY KEY (id)
 );
 
 SET FOREIGN_KEY_CHECKS=1;

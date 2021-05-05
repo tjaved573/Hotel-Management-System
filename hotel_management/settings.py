@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'main_page',
+    'guest',
+    'employee',
 ]
 
 MIDDLEWARE = [
@@ -74,13 +76,22 @@ WSGI_APPLICATION = 'hotel_management.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'HOST': '35.225.90.40',
+#         'USER': 'root',
+#         'PASSWORD': '12345',
+#         'NAME': 'hotelMgmt',
+#     }
+# }
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'HOST': '34.69.8.181',
+        'HOST': '127.0.0.1',
         'USER': 'root',
-        'PASSWORD': '12345',
-        'NAME': 'cs348Project',
+        'PASSWORD': '12345678',
+        'NAME': '348proj',
     }
 }
 

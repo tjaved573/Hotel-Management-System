@@ -1,0 +1,24 @@
+{% extends "main_page/base.html" %} {% block content %} {% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'employee/style.css' %}?{% now 'U' %}">
+<h1>Welcome {{ employee_name }}!</h1>
+
+<div class="btn logout-button">
+    <a method="POST" href="{% url 'employee_logout' %} "> Logout </a>
+</div>
+
+<ul class="nav nav-tabs">
+    <li class="active"><a href="{% url 'employee_home'%}">Info for My Hotel: {{ hotel.location }}</a></li>
+    <li><a href="{% url 'all_hotels_info'%}">Info for all Hotels</a></li>
+</ul>
+
+<div class="reservation">
+    <h2>Highest paying customers for {{ hotel.location }} branch</h2>
+    <div class="resrevation-text">
+        <ol>
+            {% for customer_info in paying_customers %}
+            <li>{{ customer_info.0|title }} {{ customer_info.1|title }} has spent ${{ customer_info.2|title }}</li>
+            {% endfor %}
+        </ol>
+    </div>
+</div>
+{% endblock content %}

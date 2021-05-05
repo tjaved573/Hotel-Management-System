@@ -1,0 +1,202 @@
+h1 {
+    color: rgb(119, 214, 151);
+}
+
+ul {
+    padding: 20px;
+    font-size: 15px;
+}
+
+select {
+    width: 200px;
+    padding-left: 5px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    margin-left: 10px;
+    border-radius: 5px;
+    font-size: 15px;
+}
+
+input {
+    width: 200px;
+    padding-left: 5px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    margin-left: 10px;
+    border-radius: 5px;
+    border-width: 1px;
+    font-size: 15px;
+}
+
+.reservation {
+    position: static;
+    text-align: left;
+    width: 90%;
+    background-color: rgb(206, 206, 206);
+    padding: 20px;
+    margin: 20px;
+    border-radius: 5px;
+    font-size: 18px;
+}
+
+.reservation-button {
+    background-color: rgb(206, 206, 206);
+    font-weight: bold;
+    border: none;
+}
+
+.reservation-text {
+    background-color: rgb(206, 206, 206);
+    margin: 10px;
+}
+
+.room-desc {
+    background-color: rgb(167, 167, 167);
+    padding-left: 30px;
+    padding-bottom: 10px;
+    padding-top: 5px;
+    margin: 10px;
+}
+
+.room-desc-text {
+    padding-top: 10px;
+}
+
+.logout-button {
+    position: absolute;
+    right: 10em;
+    width: 10em;
+    color: black;
+    background-color: aliceblue;
+}
+
+.delete-button {
+    background-color: cornflowerblue;
+    border-color: cornflowerblue;
+    margin: 10px;
+    margin-top: 15px;
+}
+
+.form-div {
+    text-align: left;
+    width: 90%;
+    background-color: rgb(206, 206, 206);
+    padding: 20px;
+    padding-top: 30px;
+    margin: 20px;
+    border-radius: 5px;
+    font-size: 18px;
+}
+
+.select-option {
+    width: 30%;
+}
+
+.select-hotel-button {
+    margin: 10px;
+    background-color: cadetblue;
+    border-color: cadetblue;
+}
+
+.success-div {
+    background-color: rgb(195, 231, 192);
+    padding: 10px;
+    margin: 10px;
+    width: 250px;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.failure-div {
+    background-color: rgb(231, 192, 192);
+    padding: 10px;
+    margin: 10px;
+    width: 250px;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.dropdown {
+    /* float: right; */
+    position: absolute;
+    right: 10em;
+
+    width: 25em;
+    /* top: 3em; */
+}
+
+
+/* Dropdown button */
+
+.dropdown .dropbtn {
+    right: 10em;
+    width: 10em;
+    color: black;
+    background-color: aliceblue;
+    font-size: 16px;
+    border: none;
+    outline: none;
+    color: cornflowerblue;
+    padding: 14px 16px;
+    /* background-color: inherit; */
+    font-family: inherit;
+    /* Important for vertical align on mobile phones */
+    margin: 0;
+    /* Important for vertical align on mobile phones */
+}
+
+
+/* Add a red background color to navbar links on hover */
+
+.navbar a:hover,
+.dropdown:hover .dropbtn {
+    /* background-color: lightgray; */
+    text-decoration: underline;
+}
+
+
+/* Dropdown content (hidden by default) */
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+
+/* Links inside the dropdown */
+
+.dropdown-content a {
+    float: none;
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+
+/* Add a grey background color to dropdown links on hover */
+
+.dropdown-content a:hover {
+    background-color: #ddd;
+}
+
+
+/* Show the dropdown menu on hover */
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+
+.filter-button {
+    width: 50%;
+}
+
+.price-filter-field {
+    margin: 5px;
+}
