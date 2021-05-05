@@ -85,13 +85,19 @@ def home(request):
     hotel = Hotel.objects.get(hotel_id=employee.hotel_id)
 
     paying_customers = []
-    with connection.cursor() as cursor:
-        cursor.callproc('PayingCustomers', [hotel.hotel_id])
-        results = cursor.fetchall()
 
-        for row in results:
-            paying_customers.append(row)
-            # print(f"\033[94m{first_name} {last_name} {total}\033[0m")
+    with connection.cursor() as cursor:
+        cursor.execute('SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED')
+    try:
+        with transaction.atomic(), connection.cursor() as cursor:
+            cursor.callproc('PayingCustomers', [hotel.hotel_id])
+            results = cursor.fetchall()
+
+            for row in results:
+                paying_customers.append(row)
+                # print(f"\033[94m{first_name} {last_name} {total}\033[0m")
+    except IntegrityError:
+        print("There was an integrity error")
 
     context = {
         'employee_name': f"{employee.first} {employee.last}",
