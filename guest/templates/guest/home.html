@@ -1,6 +1,6 @@
 {% extends "main_page/base.html" %} {% block content %} {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'guest/style.css' %}?{% now 'U' %}" />
-<h1>Welcome {{ guest_name }}</h1>
+<h1>Welcome {{ guest_name }}!</h1>
 
 <form method="POST">
     <!-- <input class="btn btn-primary logout-button"> -->

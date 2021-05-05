@@ -39,8 +39,8 @@ def registerUser(request):
 
     return render(request, 'guest/register.html', context)
 
-def loginUser(request):
 
+def loginUser(request):
     if(request.method =='POST'):            # if form has been submitted
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -54,11 +54,14 @@ def loginUser(request):
             return redirect('guest_home')
 
     context = {}
+
     return render(request, 'guest/login.html', context)
+
 
 def logoutUser(request):
     logout(request)
     context = {}
+
     return redirect('login')
 
 
@@ -66,50 +69,14 @@ def updateRoomAvailability(request, room_id):
      # STORED PROCEDURE
     with connection.cursor() as cursor:
         cursor.callproc("updtRoomAvailable", [room_id,] )
-        # cursor.execute('CREATE PROCEDURE UpdateRoomTable AS UPDATE room SET available = 0 where room_id = room_id') 
-        cursor.close()
-                    
+        # cursor.execute('CREATE PROCEDURE UpdateRoomTable AS UPDATE room SET available = 0 where room_id = room_id')
 
-def filterByPrice(request):
-    username = request.user
-    guest_id = Guest.objects.get(username=username).guest_id
-    guest = Guest.objects.get(guest_id=guest_id)
-    hotels = []
-
-    print('guest_id = ', guest_id)
-    print('username = ', username)
-
-    form = FilterForm(request.POST)
-    if(request.method == 'POST'):
-
-        form = FilterForm(request.POST)
-        
-        if(form.is_valid()):
-            lower_p = form.cleaned_data.get('lower_price')
-
-            lp = int(request.POST['lower_price'])
-
-            #'select h.hotel_id, location, room_type, price_per_night, check_in_time, check_out_time from hotel h inner join room r on r.hotel_id = h.hotel_id where price_per_night > %d;
-            with connection.cursor() as cursor:
-                cursor.execute( 'select h.hotel_id, location from hotel h inner join room r on r.hotel_id = h.hotel_id where price_per_night > %d;' % lp)
-                columns = [col[0] for col in cursor.description]
-                ans = cursor.fetchall()
-
-                # STILL TO DO 
-                # add pair here, 
-
-            context = {'hotels': hotels}
-            return render(request, 'guest/make_reservation.html', context = {'hotels': hotels})
-            # return HttpResponseRedirect(reverse('make_a_reservation', kwargs={context}))
-
-    context = {'form': form}
-    return render(request, 'guest/findOpenReservations.html', context)
 
 def home(request):
     username = request.user
     guest_id = Guest.objects.get(username=username).guest_id
-    # print(request.user.is_authenticated)
     guest = Guest.objects.get(guest_id=guest_id)
+
     reservations = Reservation.objects.all().filter(guest_id=guest_id)
 
     selected_reservation_id = None
@@ -150,13 +117,11 @@ def home(request):
     reservations_and_hotels = zip(reservations, hotels)
 
     context = {
-        # 'guest_id': guest_id,
         'guest_name': f"{guest.first} {guest.last}",
         'reservations_and_hotels': reservations_and_hotels,
         'selected_reservation_id': selected_reservation_id,
         'selected_res_info': selected_res_info,
         'num_selected_rooms': num_selected_rooms,
-        # The following two lines aren't used right now since we have the zipped list, but sending anyway
         'reservations': reservations,
         'hotels': hotels
     }
@@ -165,21 +130,12 @@ def home(request):
 
 
 def make_reservation(request):
-
-    print('incoming request = ')
-    print(request)
-
     username = request.user
     guest_id = Guest.objects.get(username=username).guest_id
     guest = Guest.objects.get(guest_id=guest_id)
 
-    hotels = Hotel.objects.all()
-
-    print("gyest values  ", guest)          # debugging
-    print("hotel value  ", hotels)          # debugging
-
     selected_hotel_id = None
-    selected_room_bundle = [('asdf', 'If you are reading this than something has gone wrong')]
+    selected_room_bundle = [('asdf', 'If you are reading this, something has gone wrong. Or no hotel selected')]
     if "select_hotel" in request.GET:   # User has selected a hotel, get room data for that hotel to pass to form
 
         selected_hotel_id = int(request.GET.get('select_hotel'))
@@ -196,11 +152,28 @@ def make_reservation(request):
 
     print("selected room bundle: ", selected_room_bundle)
 
+    hotel_ids_filter = None
+
+    filter_form = FilterForm()
+    if 'filter_by_price' in request.POST:
+        filter_form = FilterForm(request.POST)
+        if filter_form.is_valid():
+            cd = filter_form.cleaned_data
+            lower_price = cd['lower_price']
+            rooms_in_price_range = Room.objects.all().filter(price_per_night__lte=lower_price)
+            hotel_ids_filter = list(set([room.hotel_id for room in rooms_in_price_range]))
+    
+    if 'filter_by_availability' in request.POST:
+        available_rooms = Room.objects.all().filter(available=1)
+        hotel_ids_filter = list(set([room.hotel_id for room in available_rooms]))
+
+    hotels = Hotel.objects.all().filter(pk__in=hotel_ids_filter) if hotel_ids_filter else Hotel.objects.all()
+
     reservation_form = ReservationForm(selected_room_bundle)
-    if request.POST:
+    if 'make_reservation' in request.POST:
         reservation_form = ReservationForm(selected_room_bundle, request.POST)
     success = -1    # Variable used to determine what message should be shown
-    if request.POST:
+    if 'make_reservation' in request.POST:
         if reservation_form.is_valid():
             with connection.cursor() as cursor:
                 cursor.execute('SET TRANSACTION ISOLATION LEVEL REPEATABLE READ')
@@ -225,12 +198,11 @@ def make_reservation(request):
                         total = (room.price_per_night + feature_total) * duration
 
                         reservation_ids = [res.reservation_id for res in Reservation.objects.all()]
-                        # available_ids = [res_id for res_id in range(1, max(reservation_ids)+2) if res_id not in reservation_ids]
                         available_ids = [1] if (reservation_ids==None or len(reservation_ids) == 0) else [res_id for res_id in range(1, max(reservation_ids)+2) if res_id not in reservation_ids]
                         next_res_pk = available_ids[0]
 
 
-                        # Make credit card number compulsory for credit card option
+                        # TODO: Make credit card number compulsory for credit card option
 
                         new_reservation = Reservation(
                             reservation_id = next_res_pk,
@@ -242,17 +214,6 @@ def make_reservation(request):
                             total=total
                         )
                         new_reservation.save()
-
-                        # DELIMITER //
-                        # CREATE PROCEDURE unReserveRoom (
-                        #     r_id INT
-                        # )
-                        # BEGIN
-                        #     UPDATE room 
-                        #         SET available=0
-                        #         WHERE room_id = r_id;
-                        # END //
-                        # DELIMITER ;
 
                         # Changing Room Availability ONCE RESERVED 
                         # room = Room.objects.get(room_id=room_id)
@@ -266,7 +227,6 @@ def make_reservation(request):
 
                         res_room_rel_ids = [res.id for res in ReservationRoomRel.objects.all()]
                         available_ids = [1] if (res_room_rel_ids==None or len(res_room_rel_ids) == 0) else [rel_id for rel_id in range(1, max(res_room_rel_ids)+2) if rel_id not in res_room_rel_ids]
-                        # available_ids = [rel_id for rel_id in range(1, max(res_room_rel_ids)+2) if rel_id not in res_room_rel_ids]
                         next_res_room_rel_pk = available_ids[0]
 
                         new_res_room_rel = ReservationRoomRel(id=next_res_room_rel_pk, reservation=new_reservation, room=room)
@@ -285,9 +245,8 @@ def make_reservation(request):
 
         else:
             print(f"\033[93mReservation form invalid.\n{reservation_form.errors}\033[0m")
-    reservation_form = ReservationForm(selected_room_bundle)
 
-    print(f"Suceess : {success}")
+    reservation_form = ReservationForm(selected_room_bundle)
 
     context = {
         'guest_id': guest_id,
@@ -295,7 +254,8 @@ def make_reservation(request):
         'hotels': hotels,
         'selected_hotel_id': selected_hotel_id,
         'reservation_form': reservation_form,
-        'success': success
+        'success': success,
+        'filter_form': filter_form,
     }
 
     return render(request, 'guest/make_reservation.html', context)

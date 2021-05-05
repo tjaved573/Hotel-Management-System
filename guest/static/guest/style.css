@@ -117,9 +117,12 @@ input {
 }
 
 .dropdown {
-    float: right;
+    /* float: right; */
+    position: absolute;
+    right: 10em;
+
     width: 25em;
-    top: 3em;
+    /* top: 3em; */
 }
 
 
@@ -187,4 +190,13 @@ input {
 
 .dropdown:hover .dropdown-content {
     display: block;
+}
+
+
+.filter-button {
+    width: 50%;
+}
+
+.price-filter-field {
+    margin: 5px;
 }

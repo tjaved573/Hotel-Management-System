@@ -39,9 +39,9 @@ class CreateUserForm(UserCreationForm):
 class FilterForm(forms.Form):
     lower_price = forms.DecimalField(max_digits=5, decimal_places=2, help_text='Required: Lower Search Price')
 
-    class Meta:
-        model = User
-        fields = ('lower_price',)
+    # class Meta:
+    #     model = User
+    #     fields = ('lower_price',)
 
     def __init__ (self, *args, **kwargs):
         super(FilterForm,self).__init__(*args, **kwargs)

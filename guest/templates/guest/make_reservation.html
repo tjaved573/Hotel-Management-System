@@ -21,8 +21,27 @@
     <i class="fa fa-caret-down"></i>
   </button>
     <div class="dropdown-content">
-        <a href="{% url 'find_open_reservation' %}"> Price </a>
-        <a href="#">Availability</a>
+        <div>
+            <a>
+                Price
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="price-filter-field">
+                        {{ filter_form.visible_fields.0 }}
+                    </div>
+                    <input type="submit" name="filter_by_price" value="Apply" class="btn filter-button"/>
+                </form>
+            </a>
+        </div>
+        <div>
+            <a>
+                Availability
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="submit" name="filter_by_availability" value="Hotels with available rooms" class="btn filter-button" style="width: 100%;margin:10px;"/>
+                </form>
+            </a>
+        </div>
     </div>
 </div>
 
@@ -43,7 +62,7 @@
     <div class="reservation-text">
         <form method="POST">
             {% csrf_token %} {{ reservation_form.as_p }}
-            <input type="submit" value="Make reservation" class="btn button" />
+            <input type="submit" name="make_reservation" value="Make reservation" class="btn button" />
         </form>
         {% if success == 1 %}
         <div class="success-div">
