@@ -8,9 +8,15 @@ DB instance on GCP: HotelManagementSystem-CS348 <br />
 DB name on GCP: datacs348project <br />
 
 
-Indexes:<br />
+## SQL Queries:
 
-create index room_index on room (price_per_night); <br />
-create index room_av_index on room (available); <br />
-create index av_rating on hotel (rating);<br />
-create index hotel_occupancy on hotel (occupancy);<br />
+Django is based around ORM - so around 70% of our queries interact with MySQl
+in this way.
+
+
+## Indexes:<br />
+
+create index res_room_rel_idx on reservation (reservation_id); <br />
+create index room_av_idx on room (available); <br />
+create index room_price_idx on room (price_per_night); <br />
+create index res_guest_idx on reservation (guest_id); <br />
