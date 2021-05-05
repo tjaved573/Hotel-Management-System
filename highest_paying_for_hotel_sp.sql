@@ -16,7 +16,8 @@ BEGIN
         NATURAL JOIN reservation_room_rel
         NATURAL JOIN room
         WHERE hotel_id = h_id
-        GROUP BY guest_id;
+        GROUP BY guest_id
+        ORDER BY sum_total DESC;
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
 
     DROP TABLE IF EXISTS temp_table;
