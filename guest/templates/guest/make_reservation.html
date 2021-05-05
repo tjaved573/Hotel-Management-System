@@ -62,6 +62,7 @@
     <div class="reservation-text">
         <form method="POST">
             {% csrf_token %} {{ reservation_form.as_p }}
+            {{ error_messages.credit_card_number }}
             <input type="submit" name="make_reservation" value="Make reservation" class="btn button" />
         </form>
         {% if success == 1 %}

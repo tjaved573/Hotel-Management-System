@@ -169,6 +169,7 @@ def make_reservation(request):
 
     hotels = Hotel.objects.all().filter(pk__in=hotel_ids_filter) if hotel_ids_filter else Hotel.objects.all()
 
+    error_messages = None
     reservation_form = ReservationForm(selected_room_bundle)
     if 'make_reservation' in request.POST:
         reservation_form = ReservationForm(selected_room_bundle, request.POST)
@@ -244,7 +245,10 @@ def make_reservation(request):
 
 
         else:
+            error_messages = reservation_form.errors
             print(f"\033[93mReservation form invalid.\n{reservation_form.errors}\033[0m")
+            print(reservation_form.errors.as_data)
+            print(reservation_form.errors.as_text)
 
     reservation_form = ReservationForm(selected_room_bundle)
 
@@ -256,6 +260,7 @@ def make_reservation(request):
         'reservation_form': reservation_form,
         'success': success,
         'filter_form': filter_form,
+        'error_messages': error_messages
     }
 
     return render(request, 'guest/make_reservation.html', context)

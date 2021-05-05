@@ -6,6 +6,8 @@ import datetime
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
+from django.core.validators import EMPTY_VALUES
+
 
 class ReservationForm(forms.Form):
     check_in_date = forms.DateField(initial=datetime.date.today)
@@ -18,6 +20,15 @@ class ReservationForm(forms.Form):
     def __init__(self,selected_room_bundle,*args,**kwargs):
         super(ReservationForm,self).__init__(*args,**kwargs)
         self.fields['room'].choices = selected_room_bundle
+    
+    def clean(self):
+        credit_card = self.cleaned_data.get('payment_type') == 'credit'
+        if credit_card:
+            credit_card_number = self.cleaned_data.get('credit_card_number', None)
+            if credit_card_number in EMPTY_VALUES:
+                self._errors['credit_card_number'] = self.error_class(['Credit card number required here'])
+        return self.cleaned_data
+
 
 # new form for registration of user
 class CreateUserForm(UserCreationForm):
