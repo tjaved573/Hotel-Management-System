@@ -4,7 +4,10 @@
     <link rel="stylesheet" type="text/css" href="{% static 'employee/style.css' %}?{% now 'U' %}">
     <h1>Welcome {{ employee_name }}!</h1>
 
-    <input type="submit" value="Log out" class="btn btn-primary logout-button"/>
+        <!-- <input class="btn btn-primary logout-button"> -->
+    <div class="btn logout-button">
+        <a method="POST" href="{% url 'employee_logout' %} "> Logout </a>
+    </div>
 
     <ul class="nav nav-tabs">
         <li class="active"><a href="#">Reservations for {{ hotel.location }}</a></li>

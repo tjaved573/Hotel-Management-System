@@ -16,12 +16,18 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from guest import views as guest_views
+from employee import views as employee_views
 
 urlpatterns = [
     path('admin/', admin.site.urls, name="adminP"),
     path('', include('main_page.urls'), name='main'),
     path('guest/', include('guest.urls'), name='guest'),
-    path('register/', guest_views.registerUser, name="register"),
-    path('login/', guest_views.loginUser, name="login"),
-    path('logout/', guest_views.logoutUser, name="logout")
+    path('guest_register/', guest_views.registerUser, name="guest_register"),
+    path('guest_login/', guest_views.loginUser, name="guest_login"),
+    path('guest_logout/', guest_views.logoutUser, name="guest_logout"),
+
+    path('employee/', include('employee.urls'), name='employee'),
+    path('employee_register/', employee_views.registerUser, name="employee_register"),
+    path('employee_login/', employee_views.loginUser, name="employee_login"),
+    path('employee_logout/', employee_views.logoutUser, name="employee_logout"),
 ]

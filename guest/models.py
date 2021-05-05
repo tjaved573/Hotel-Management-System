@@ -14,6 +14,20 @@ class Guest(models.Model):
         return f"{{{self.first} {self.last}, username: {self.username}, guest_id: {self.guest_id}}}"
 
 
+class Employee(models.Model):
+    class Meta:
+        db_table = 'employee'
+    
+    employee_id = models.IntegerField(primary_key=True)
+    username    = models.CharField(max_length=50)
+    hotel_id    = models.IntegerField()
+    first       = models.CharField(max_length=20)
+    last        = models.CharField(max_length=20)
+
+    def __str__(self):
+        return f"{{{self.first} {self.last}, username: {self.username}, employee_id: {self.employee_id}}}"
+
+
 class Reservation(models.Model):
     class Meta:
         db_table = 'reservation'

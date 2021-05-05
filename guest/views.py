@@ -6,12 +6,12 @@ from django.db.utils import IntegrityError
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 
-
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
+
 
 def registerUser(request):
     form = CreateUserForm(request.POST)
@@ -22,7 +22,7 @@ def registerUser(request):
 
             # save user in guest database
             guest_ids = [guest.guest_id for guest in Guest.objects.all()]
-            available_ids = [g_id for g_id in range(1, max(guest_ids)+2) if g_id not in guest_ids]
+            available_ids = [1] if (guest_ids==None or len(guest_ids) == 0) else [g_id for g_id in range(1, max(guest_ids)+2) if g_id not in guest_ids]
             next_guest_pk = available_ids[0]
             g = Guest()
             g.guest_id = next_guest_pk
@@ -33,7 +33,7 @@ def registerUser(request):
 
             user = form.cleaned_data.get('username')
             messages.success(request, 'Account successfully created for ' + user)
-            return redirect('login')
+            return redirect('guest_login')
 
     context = {'form': form}
 
@@ -62,7 +62,7 @@ def logoutUser(request):
     logout(request)
     context = {}
 
-    return redirect('login')
+    return redirect('guest_login')
 
 
 def updateRoomAvailability(request, room_id):

@@ -1,8 +1,84 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.db import connection, transaction
 from guest.models import Guest, Employee, Reservation, ReservationRoomRel, Room, Hotel, Feature, FeatureRoomRel
+from .forms import CreateUserForm
+from django.contrib.auth.models import User
+from django.http import HttpResponseRedirect
 
-def home(request, employee_id):
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages
+
+from django.contrib.auth import authenticate, login, logout
+from django.urls import reverse
+
+
+EMPLOYEE_PREFIX="employee/"
+
+
+def registerUser(request):
+    form = CreateUserForm(request.POST)
+    if(request.method == 'POST'):
+        form = CreateUserForm(request.POST)
+        if(form.is_valid()):
+            username = form.cleaned_data.get('username')
+            first = form.cleaned_data.get('firstname')
+            last = form.cleaned_data.get('lastname')
+            email = form.cleaned_data.get('email')
+            password = form.cleaned_data.get('password1')
+            auth_user = User(username=f"{EMPLOYEE_PREFIX}{username}", email=email)
+            auth_user.set_password(password)    # Does the hashing
+            auth_user.save()
+
+            employee_ids = [employee.employee_id for employee in Employee.objects.all()]
+            available_ids = [1] if (employee_ids==None or len(employee_ids) == 0) else [e_id for e_id in range(1, max(employee_ids)+2) if e_id not in employee_ids]
+            next_employee_pk = available_ids[0]
+            e = Employee(
+                employee_id = next_employee_pk,
+                username    = username,
+                hotel_id    = None,     # Should be added manually
+                first       = first,
+                last        = last,
+            )
+            e.save()        
+
+            user = EMPLOYEE_PREFIX + username
+            messages.success(request, 'Account successfully created for ' + user)
+            return redirect('employee_login')
+
+    context = {'form': form}
+
+    return render(request, 'employee/register.html', context)
+
+
+def loginUser(request):
+    if(request.method =='POST'):            # if form has been submitted
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=f"{EMPLOYEE_PREFIX}{username}", password=password)
+        if(user is not None):
+            e_id = Employee.objects.all().filter(username=username)[0].employee_id
+            print('valid user ' + str(e_id) + username)
+            login(request, user)
+
+            # TODO :find id against username, from local db and add here
+            return redirect('employee_home')
+
+    context = {}
+
+    return render(request, 'employee/login.html', context)
+
+
+def logoutUser(request):
+    logout(request)
+    context = {}
+
+    return redirect('employee_login')
+
+
+def home(request):
+    username = request.user.username
+    username = username.split(EMPLOYEE_PREFIX)[1]   # VERY IMPORTANT!!! "employee/username" becomes "username"
+    employee_id = Employee.objects.get(username=username).employee_id
     employee = Employee.objects.get(employee_id=employee_id)
 
     context = {
