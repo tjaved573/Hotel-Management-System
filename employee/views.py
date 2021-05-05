@@ -25,6 +25,7 @@ def registerUser(request):
             last = form.cleaned_data.get('lastname')
             email = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password1')
+            hotel_id = form.cleaned_data.get('hotel_id')
             auth_user = User(username=f"{EMPLOYEE_PREFIX}{username}", email=email)
             auth_user.set_password(password)    # Does the hashing
             auth_user.save()
@@ -35,7 +36,7 @@ def registerUser(request):
             e = Employee(
                 employee_id = next_employee_pk,
                 username    = username,
-                hotel_id    = None,     # Should be added manually
+                hotel_id    = hotel_id,
                 first       = first,
                 last        = last,
             )
@@ -81,8 +82,28 @@ def home(request):
     employee_id = Employee.objects.get(username=username).employee_id
     employee = Employee.objects.get(employee_id=employee_id)
 
+    hotel = Hotel.objects.get(hotel_id=employee.hotel_id)
+
     context = {
         'employee_name': f"{employee.first} {employee.last}",
+        'hotel': hotel,
     }
 
     return render(request, 'employee/home.html', context)
+
+
+def all_hotels_info(request):
+    username = request.user.username
+    username = username.split(EMPLOYEE_PREFIX)[1]   # VERY IMPORTANT!!! "employee/username" becomes "username"
+    employee_id = Employee.objects.get(username=username).employee_id
+    employee = Employee.objects.get(employee_id=employee_id)
+
+    hotel = Hotel.objects.get(hotel_id=employee.hotel_id)
+
+    context = {
+        'employee_name': f"{employee.first} {employee.last}",
+        'hotel': hotel,
+    }
+
+    return render(request, 'employee/all_hotels_info.html', context)
+

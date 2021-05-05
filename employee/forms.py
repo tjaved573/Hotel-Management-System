@@ -13,6 +13,7 @@ class CreateUserForm(UserCreationForm):
     lastname = forms.CharField(max_length=12, min_length=4, required=True, help_text='Required: Last Name',
                                widget=(forms.TextInput(attrs={'class': 'form-control'})))
     email = forms.EmailField(max_length=50, help_text='Required. Inform a valid email address.', widget=(forms.TextInput(attrs={'class': 'form-control'})))
+    # hotel_id = forms.IntegerField(required=True, help_text='Required: Hotel id', widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Hotel id'}))
 
     class Meta:
         model = User
