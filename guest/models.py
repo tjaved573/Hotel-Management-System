@@ -20,7 +20,7 @@ class Employee(models.Model):
     
     employee_id = models.IntegerField(primary_key=True)
     username    = models.CharField(max_length=50)
-    hotel_id    = models.IntegerField()
+    hotel_id    = models.IntegerField(null=True)
     first       = models.CharField(max_length=20)
     last        = models.CharField(max_length=20)
 

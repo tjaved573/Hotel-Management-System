@@ -10,4 +10,15 @@
     <li><a href="{% url 'employee_home'%}">Info for My Hotel: {{ hotel.location }}</a></li>
     <li class="active"><a href="{% url 'all_hotels_info'%}">Info for all Hotels</a></li>
 </ul>
+
+<div class="reservation">
+    <h2>Ranking of hotels by percentage of profit</h2>
+    <div class="resrevation-text">
+        <ol>
+            {% for hotel_info in ranked_hotels %}
+            <li>{{ hotel_info.0|title }}, {{ hotel_info.1|title }}</li>
+            {% endfor %}
+        </ol>
+    </div>
+</div>
 {% endblock content %}

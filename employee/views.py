@@ -25,7 +25,6 @@ def registerUser(request):
             last = form.cleaned_data.get('lastname')
             email = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password1')
-            hotel_id = form.cleaned_data.get('hotel_id')
             auth_user = User(username=f"{EMPLOYEE_PREFIX}{username}", email=email)
             auth_user.set_password(password)    # Does the hashing
             auth_user.save()
@@ -116,9 +115,20 @@ def all_hotels_info(request):
 
     hotel = Hotel.objects.get(hotel_id=employee.hotel_id)
 
+    ranked_hotels = []
+
+    with connection.cursor() as cursor:
+        cursor.callproc('RankHotels', [])
+        results = cursor.fetchall()
+
+        for row in results:
+            ranked_hotels.append(row)
+            # print(f"\033[94m{row}\033[0m")
+
     context = {
         'employee_name': f"{employee.first} {employee.last}",
         'hotel': hotel,
+        'ranked_hotels': ranked_hotels,
     }
 
     return render(request, 'employee/all_hotels_info.html', context)
