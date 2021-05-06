@@ -202,9 +202,6 @@ def make_reservation(request):
                         available_ids = [1] if (reservation_ids==None or len(reservation_ids) == 0) else [res_id for res_id in range(1, max(reservation_ids)+2) if res_id not in reservation_ids]
                         next_res_pk = available_ids[0]
 
-
-                        # TODO: Make credit card number compulsory for credit card option
-
                         new_reservation = Reservation(
                             reservation_id = next_res_pk,
                             guest_id=guest_id,
