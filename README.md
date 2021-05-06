@@ -32,7 +32,8 @@ relationships between entities. For the employee table, the stored procedures fo
 
 ## Transactions and Isolation Levels:
 
-Transactions are used in three major places in this project. The first is when a guest is making a reservation. This transaction starts immediately after the guest has clicked the final button in the form to make the reservation. This transaction is set with an isolation level of repeatable read because multiple guests might attempt to reserve the same room at the same time. If this were the case, bits of each transaction may both check and confirm the room is available at the same time before only one can reserve the room. We don't need a more restrictive isolation level in this case since 
+Transactions are used in three major places in this project. The first is when a guest is making a reservation. This transaction starts immediately after the guest has clicked the final button in the form to make the reservation. This transaction is set with an isolation level of repeatable read because multiple guests might attempt to reserve the same room at the same time. If this were the case, bits of each transaction may both check and confirm the room is available at the same time before only one can reserve the room. We don't need a more restrictive isolation level in this case, there is no possibility of phantom data.<br/>
+The other two transactions are placed around the stored procedures for the employee reports. These two transactions only require isolation levels of read uncommitted, since we are only getting approximate data that doesn't entirely matter for the functionality of our application.
 
 ## Indexes:<br />
 
