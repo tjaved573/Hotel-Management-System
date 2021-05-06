@@ -60,10 +60,29 @@ GROUP BY hotel_id
 ORDER BY sum_total DESC;
 ```
 
-
-Finding rooms for the selected hotel in guest/views.py
+Finding rooms for the selected hotel in guest/views.py, example:</br>
+`selected_res_room_rel = ReservationRoomRel.objects.all().filter(reservation_id=selected_reservation_id)`
 
 
 ### create index room_av_idx on room (available); <br />
+This index is useful for filtering hotels based on which have available rooms. This isn't too much of a demanding process, but the index becomes especially useful with the more rooms that exist, and with more complex queries that return data based off of only available rooms. This is used in guest/views.py:</br>
+`available_rooms = Room.objects.all().filter(available=1)`</br>
+Which translates to:</br>
+`select * from room where available=1;`
+
+
 ### create index room_price_idx on room (price_per_night); <br />
+This index is also used for filtering hotels in guest/views.py. Again this is not an especially demanding task, but it is a useful index to have since it is a main feature on the guest page. It is used on queries like the following:</br>
+`available_rooms = Room.objects.all().filter(price_per_night__lte=128)`</br>
+Which translates to:</br>
+`select * from room where price_per_night <= 128;`
+
+
 ### create index res_guest_idx on reservation (guest_id); <br />
+This is a prime example of a useful index because guest_id is one of our most filtered-by queries in this application. Whenever a guest logs on, we retrieve reservations attributed to them.</br>
+The following is run at every loading of the guest home page:</br>
+`reservations = Reservation.objects.all().filter(guest_id=guest_id)`</br>
+Which translates to:</br>
+`select * from reservation where guest_id = guest_id;`
+
+
