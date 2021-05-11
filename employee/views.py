@@ -10,6 +10,7 @@ from django.contrib import messages
 
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
+from django.db.utils import IntegrityError
 
 
 EMPLOYEE_PREFIX="employee/"

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +26,7 @@ SECRET_KEY = '5+l9xgbrc9k=r#nb-yv$c-o!6dx7145q5g$i_qkke(3a9lrt)a'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['hotelmanagementsystem-cs348.uc.r.appspot.com', '127.0.0.1']
 
 
 # Application definition
@@ -76,24 +77,46 @@ WSGI_APPLICATION = 'hotel_management.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+# [START db_setup]
+if os.getenv('GAE_APPLICATION', None):
+    # Running on production App Engine, so connect to Google Cloud SQL using
+    # the unix socket at /cloudsql/<your-cloudsql-connection string>
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'HOST': '/cloudsql/hotelmanagementsystem-cs348:us-central1:final-cs348-gcp',
+            'USER': 'root',
+            'NAME': 'finalCS348db',
+            'PASSWORD': '12345',
+        }
+    }
+else:
+    # Running locally so connect to either a local MySQL instance or connect 
+    # to Cloud SQL via the proxy.  To start the proxy via command line: 
+    #    $ cloud_sql_proxy -instances=[INSTANCE_CONNECTION_NAME]=tcp:3306 
+    # See https://cloud.google.com/sql/docs/mysql-connect-proxy
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'HOST': '127.0.0.1',
+            'PORT': '3306',
+            'NAME': 'CS348project',
+            'USER': 'root',
+        }
+    }
+# [END db_setup]
+
+
+# original db configuration
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
-#         'HOST': '35.225.90.40',
+#         'HOST': '127.0.0.1',
 #         'USER': 'root',
-#         'PASSWORD': '12345',
-#         'NAME': 'hotelMgmt',
+#         'NAME': 'CS348project',
 #     }
 # }
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'HOST': '127.0.0.1',
-        'USER': 'root',
-        'PASSWORD': '12345678',
-        'NAME': '348proj',
-    }
-}
 
 
 # Password validation
@@ -133,3 +156,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = 'static'          # GCP fix

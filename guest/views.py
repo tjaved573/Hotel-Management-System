@@ -44,6 +44,7 @@ def loginUser(request):
     if(request.method =='POST'):            # if form has been submitted
         username = request.POST.get('username')
         password = request.POST.get('password')
+        print(username + '   ->>>>>>>>>>>>>> '  + password)
         user = authenticate(request, username=username, password=password)
         if(user is not None):
             g_id = Guest.objects.all().filter(username=username)[0].guest_id
