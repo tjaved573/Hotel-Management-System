@@ -1,4 +1,6 @@
 venv/
+cloud_sql_proxy/
+google-cloud-sdk/
 .DS_Store
 # *.pyc
 # __pycache__/*
